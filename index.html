@@ -44,7 +44,7 @@
                 <button onclick="logoutUser()" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-1 px-2 rounded shadow">Logout</button>
             </div>
 
-            <!-- Controls -->
+            <!-- Controls (Niyantran) -->
             <div class="p-3 bg-white border-b border-gray-300 flex flex-col gap-3">
                 
                 <!-- Strategy 1 Controls -->
@@ -72,7 +72,7 @@
                 <div id="lbl-summary" class="text-xs font-bold text-gray-600 w-full text-center bg-gray-100 py-1 rounded border border-gray-200">Loading Data...</div>
             </div>
 
-            <!-- Signal Cards Container -->
+            <!-- Signal Cards Container (Sanket Card) -->
             <div id="cards-container" class="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
                 <!-- Cards injected here -->
             </div>
@@ -96,7 +96,7 @@
                 <button onclick="deleteAllTgMessages()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-1 px-2 rounded shadow">Delete All</button>
             </div>
 
-            <!-- Chat Input -->
+            <!-- Chat Input (Kotha bola) -->
             <div class="bg-white p-3 flex flex-col gap-2 border-b border-gray-300 shadow-sm">
                 <label class="font-bold text-sm text-gray-700">Send Custom Message:</label>
                 <div class="flex gap-2">
@@ -117,7 +117,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, getDocs, getDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ==========================================
         // FIREBASE SETUP
@@ -141,6 +141,7 @@
         // DB References
         const getSignalsRef = () => collection(db, 'artifacts', 'crypto-scalper', 'users', currentUser.uid, 'signals');
         const getTgHistoryRef = () => collection(db, 'artifacts', 'crypto-scalper', 'users', currentUser.uid, 'tgHistory');
+        const getSettingsRef = () => doc(db, 'artifacts', 'crypto-scalper', 'users', currentUser.uid, 'settings', 'botState');
 
         // ==========================================
         // SETTINGS & STATE
@@ -166,7 +167,7 @@
         ];
 
         // ==========================================
-        // AUTHENTICATION LOGIC
+        // AUTHENTICATION LOGIC (Login system)
         // ==========================================
         function showError(msg) {
             let errEl = document.getElementById('login-error');
@@ -214,24 +215,52 @@
                 
                 await loadDataFromFirestore();
                 initCanvas();
+                
+                // Auto-resume logic if state was previously ON (Reload korle auto chalu hobe)
+                if (isRunningS1) {
+                    document.getElementById('btn-start-s1').disabled = true;
+                    document.getElementById('btn-start-s1').classList.add('opacity-50', 'cursor-not-allowed');
+                    document.getElementById('btn-stop-s1').disabled = false;
+                    document.getElementById('btn-stop-s1').classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+                if (isRunningS2) {
+                    document.getElementById('btn-start-s2').disabled = true;
+                    document.getElementById('btn-start-s2').classList.add('opacity-50', 'cursor-not-allowed');
+                    document.getElementById('btn-stop-s2').disabled = false;
+                    document.getElementById('btn-stop-s2').classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+
                 updateSummary();
+
+                if (isRunningS1 || isRunningS2) {
+                    if (scannerInterval === null) {
+                        tradingLoop();
+                    }
+                }
             } else {
                 currentUser = null;
                 document.getElementById('main-app').classList.add('hidden-ui');
                 document.getElementById('login-screen').classList.remove('hidden-ui');
                 
-                // Reset UI & Stop strategies
-                if(isRunningS1) stopStrategy('S1');
-                if(isRunningS2) stopStrategy('S2');
+                if(isRunningS1) stopStrategy('S1', false);
+                if(isRunningS2) stopStrategy('S2', false);
                 document.getElementById('cards-container').innerHTML = '';
             }
         });
 
         // ==========================================
-        // DATABASE / FIRESTORE LOGIC
+        // DATABASE / FIRESTORE LOGIC (Data save kora)
         // ==========================================
         async function loadDataFromFirestore() {
             try {
+                // Load Settings (Bot state auto-resume)
+                const settingsSnap = await getDoc(getSettingsRef());
+                if (settingsSnap.exists()) {
+                    const state = settingsSnap.data();
+                    isRunningS1 = state.runS1 || false;
+                    isRunningS2 = state.runS2 || false;
+                }
+
                 // Fetch Signals
                 const sigSnapshot = await getDocs(getSignalsRef());
                 signals = sigSnapshot.docs.map(d => d.data());
@@ -244,6 +273,12 @@
                 renderTgHistory();
             } catch (e) {
                 console.error("Error fetching data:", e);
+            }
+        }
+
+        async function saveBotState() {
+            if(currentUser) {
+                await setDoc(getSettingsRef(), { runS1: isRunningS1, runS2: isRunningS2 }, { merge: true });
             }
         }
 
@@ -492,7 +527,6 @@
 
         async function deleteAllTgMessages() {
             if(confirm("WARNING: This will delete ALL sent messages and signals from the Telegram channel. Proceed?")) {
-                // Keep an immutable copy of the history array to iterate safely
                 const historyCopy = [...tgHistory];
                 for(let msg of historyCopy) {
                     try {
@@ -1047,9 +1081,9 @@
         }
 
         // ==========================================
-        // SCANNER CONTROLS
+        // SCANNER CONTROLS (State Update)
         // ==========================================
-        function startStrategy(strat) {
+        function startStrategy(strat, saveToDb = true) {
             if(strat === 'S1') {
                 isRunningS1 = true;
                 document.getElementById('btn-start-s1').disabled = true;
@@ -1064,13 +1098,15 @@
                 document.getElementById('btn-stop-s2').classList.remove('opacity-50', 'cursor-not-allowed');
             }
             
+            if (saveToDb) saveBotState(); // Save state to Firebase
             updateSummary();
+            
             if(scannerInterval === null) {
                 tradingLoop();
             }
         }
 
-        function stopStrategy(strat) {
+        function stopStrategy(strat, saveToDb = true) {
             if(strat === 'S1') {
                 isRunningS1 = false;
                 document.getElementById('btn-start-s1').disabled = false;
@@ -1085,7 +1121,9 @@
                 document.getElementById('btn-stop-s2').classList.add('opacity-50', 'cursor-not-allowed');
             }
             
+            if (saveToDb) saveBotState(); // Save state to Firebase
             updateSummary();
+            
             if(!isRunningS1 && !isRunningS2) {
                 clearTimeout(scannerInterval);
                 scannerInterval = null;
