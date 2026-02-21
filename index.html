@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Crypto Scalper - Smart Money Concepts</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #F3F4F6; }
+        ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+        .hidden-ui { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen font-sans overflow-hidden text-gray-800 flex">
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900">
+        <div class="bg-gray-800 p-8 rounded-lg shadow-2xl w-80 text-center border border-gray-700">
+            <div class="text-5xl mb-4">🔒</div>
+            <label class="block text-gray-300 font-semibold mb-4 text-lg">Firebase Login</label>
+            
+            <input type="email" id="email-input" class="w-full p-2 mb-3 text-center rounded bg-gray-700 text-white font-bold border border-gray-600 focus:outline-none focus:border-blue-500" placeholder="Email Address">
+            <input type="password" id="password-input" class="w-full p-2 text-center rounded bg-gray-700 text-white font-bold border border-gray-600 focus:outline-none focus:border-blue-500 mb-6" placeholder="Password">
+            
+            <div class="flex gap-2">
+                <button onclick="loginWithEmail()" class="w-1/2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-2 rounded transition">Login</button>
+                <button onclick="registerWithEmail()" class="w-1/2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-2 rounded transition">Sign Up</button>
+            </div>
+            <p id="login-error" class="text-red-400 mt-3 text-xs hidden-ui"></p>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="main-app" class="hidden-ui flex w-full h-full">
+        
+        <!-- LEFT PANEL: Controls & Signals -->
+        <div class="w-1/4 min-w-[340px] bg-gray-100 flex flex-col border-r border-gray-300 shadow-lg z-10 h-full">
+            <div class="bg-gray-800 py-4 px-4 shadow-md flex justify-between items-center">
+                <h1 class="text-white text-lg font-bold">⚡ Scalper Bot</h1>
+                <button onclick="logoutUser()" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-1 px-2 rounded shadow">Logout</button>
+            </div>
+
+            <!-- Controls -->
+            <div class="p-3 bg-white border-b border-gray-300 flex flex-col gap-3">
+                
+                <!-- Strategy 1 Controls -->
+                <div class="bg-gray-50 p-2 rounded border border-gray-200">
+                    <div class="text-xs font-bold text-gray-700 mb-2">🛡️ Strategy 1 (SMC 15m)</div>
+                    <div class="flex gap-2 justify-between">
+                        <button id="btn-start-s1" onclick="startStrategy('S1')" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-1.5 px-2 rounded text-xs shadow">▶ Start S1</button>
+                        <button id="btn-stop-s1" onclick="stopStrategy('S1')" disabled class="flex-1 bg-red-500 opacity-50 cursor-not-allowed text-white font-bold py-1.5 px-2 rounded text-xs shadow">⏹ Stop S1</button>
+                    </div>
+                </div>
+
+                <!-- Strategy 2 Controls -->
+                <div class="bg-gray-50 p-2 rounded border border-gray-200">
+                    <div class="text-xs font-bold text-purple-700 mb-2">🔥 Strategy 2 (ICT+SMC 15m/5m)</div>
+                    <div class="flex gap-2 justify-between">
+                        <button id="btn-start-s2" onclick="startStrategy('S2')" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-bold py-1.5 px-2 rounded text-xs shadow">▶ Start S2</button>
+                        <button id="btn-stop-s2" onclick="stopStrategy('S2')" disabled class="flex-1 bg-red-500 opacity-50 cursor-not-allowed text-white font-bold py-1.5 px-2 rounded text-xs shadow">⏹ Stop S2</button>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button onclick="resetStats()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-2 rounded text-xs shadow">📊 Reset All Stats & Trades</button>
+                </div>
+                
+                <div id="lbl-summary" class="text-xs font-bold text-gray-600 w-full text-center bg-gray-100 py-1 rounded border border-gray-200">Loading Data...</div>
+            </div>
+
+            <!-- Signal Cards Container -->
+            <div id="cards-container" class="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
+                <!-- Cards injected here -->
+            </div>
+        </div>
+
+        <!-- CENTER PANEL: Chart -->
+        <div class="flex-1 bg-white flex flex-col border-r border-gray-300">
+            <div class="py-3 px-6 bg-white border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-gray-800">📈 Live Market Overview</h2>
+            </div>
+            <div class="flex-1 p-4 flex items-center justify-center bg-gray-50 relative">
+                <!-- Chart Canvas -->
+                <canvas id="marketChart" class="bg-white shadow-sm border border-gray-200 rounded w-full h-full object-contain"></canvas>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: Telegram Management -->
+        <div class="w-1/4 min-w-[350px] bg-gray-100 flex flex-col shadow-lg z-10 h-full">
+            <div class="bg-blue-600 py-4 text-center shadow-md flex justify-between items-center px-4">
+                <h1 class="text-white text-lg font-bold">✈️ Telegram Manager</h1>
+                <button onclick="deleteAllTgMessages()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-1 px-2 rounded shadow">Delete All</button>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="bg-white p-3 flex flex-col gap-2 border-b border-gray-300 shadow-sm">
+                <label class="font-bold text-sm text-gray-700">Send Custom Message:</label>
+                <div class="flex gap-2">
+                    <input type="text" id="chat-input" class="flex-1 p-2 rounded border border-gray-300 text-sm focus:outline-none focus:border-blue-500" placeholder="Type message...">
+                    <button onclick="sendCustomMsg()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-sm shadow">Send</button>
+                </div>
+            </div>
+
+            <!-- Telegram History List -->
+            <div class="p-2 bg-gray-200 font-bold text-xs text-gray-600 uppercase tracking-wider">Sent Messages & Signals</div>
+            <div id="tg-history-container" class="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
+                <!-- Telegram History items injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT LOGIC AS MODULE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // ==========================================
+        // FIREBASE SETUP
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDIYaWd69CLk7DTTpqU7a-k1tj5dDgpsTw",
+            authDomain: "crypto0smc-scalper-web-app.firebaseapp.com",
+            projectId: "crypto0smc-scalper-web-app",
+            storageBucket: "crypto0smc-scalper-web-app.firebasestorage.app",
+            messagingSenderId: "361733677300",
+            appId: "1:361733677300:web:799cb6264ac7ce17453ea1",
+            measurementId: "G-TJFV8NMBDG"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        // DB References
+        const getSignalsRef = () => collection(db, 'artifacts', 'crypto-scalper', 'users', currentUser.uid, 'signals');
+        const getTgHistoryRef = () => collection(db, 'artifacts', 'crypto-scalper', 'users', currentUser.uid, 'tgHistory');
+
+        // ==========================================
+        // SETTINGS & STATE
+        // ==========================================
+        const TELEGRAM_BOT_TOKEN = "8400049635:AAHleIW04zCFXiZXlRDQ8HT3BhqqlzKhChg";
+        const TELEGRAM_CHAT_ID = "@newwwwwwgw";
+        
+        let lastReportMsgId = null;
+        let scannerInterval = null;
+
+        let isRunningS1 = false;
+        let isRunningS2 = false;
+        
+        let activeTradesS1 = {}; 
+        let activeTradesS2 = {}; 
+
+        let signals = [];
+        let tgHistory = [];
+
+        const symbolsToTrade = [
+            'BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 
+            'ADAUSDT', 'DOGEUSDT', 'MATICUSDT', 'LINKUSDT', 'AVAXUSDT'
+        ];
+
+        // ==========================================
+        // AUTHENTICATION LOGIC
+        // ==========================================
+        function showError(msg) {
+            let errEl = document.getElementById('login-error');
+            errEl.innerText = msg;
+            errEl.classList.remove('hidden-ui');
+        }
+
+        async function loginWithEmail() {
+            const email = document.getElementById('email-input').value;
+            const pwd = document.getElementById('password-input').value;
+            if(!email || !pwd) return showError("Please enter email and password");
+            try {
+                await signInWithEmailAndPassword(auth, email, pwd);
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        async function registerWithEmail() {
+            const email = document.getElementById('email-input').value;
+            const pwd = document.getElementById('password-input').value;
+            if(!email || !pwd) return showError("Please enter email and password");
+            try {
+                await createUserWithEmailAndPassword(auth, email, pwd);
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        async function logoutUser() {
+            await signOut(auth);
+        }
+
+        document.getElementById('password-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') loginWithEmail();
+        });
+
+        // Listen for auth state changes
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('login-error').classList.add('hidden-ui');
+                document.getElementById('login-screen').classList.add('hidden-ui');
+                document.getElementById('main-app').classList.remove('hidden-ui');
+                
+                await loadDataFromFirestore();
+                initCanvas();
+                updateSummary();
+            } else {
+                currentUser = null;
+                document.getElementById('main-app').classList.add('hidden-ui');
+                document.getElementById('login-screen').classList.remove('hidden-ui');
+                
+                // Reset UI & Stop strategies
+                if(isRunningS1) stopStrategy('S1');
+                if(isRunningS2) stopStrategy('S2');
+                document.getElementById('cards-container').innerHTML = '';
+            }
+        });
+
+        // ==========================================
+        // DATABASE / FIRESTORE LOGIC
+        // ==========================================
+        async function loadDataFromFirestore() {
+            try {
+                // Fetch Signals
+                const sigSnapshot = await getDocs(getSignalsRef());
+                signals = sigSnapshot.docs.map(d => d.data());
+
+                // Fetch Telegram History
+                const tgSnapshot = await getDocs(getTgHistoryRef());
+                tgHistory = tgSnapshot.docs.map(d => d.data());
+                tgHistory.sort((a, b) => b.time - a.time);
+
+                renderTgHistory();
+            } catch (e) {
+                console.error("Error fetching data:", e);
+            }
+        }
+
+        async function saveSignal(symbol, type, entry, tp, sl, strategy) {
+            let sigId = Date.now() + Math.floor(Math.random() * 100);
+            let newSig = { id: sigId, time: new Date().toISOString(), symbol, type, entry, tp, sl, status: 'PENDING', strategy: strategy };
+            
+            signals.push(newSig);
+            
+            if(currentUser) {
+                await setDoc(doc(getSignalsRef(), sigId.toString()), newSig);
+            }
+            return sigId;
+        }
+
+        async function updateSignalStatus(sigId, newStatus) {
+            let signal = signals.find(s => s.id === sigId);
+            if(signal) {
+                signal.status = newStatus;
+                if(currentUser) {
+                    await updateDoc(doc(getSignalsRef(), sigId.toString()), { status: newStatus });
+                }
+            }
+        }
+
+        function getDailyReport() {
+            let today = new Date();
+            today.setHours(0,0,0,0);
+            
+            let total = 0, wins = 0, losses = 0, pending = 0, be = 0;
+            
+            signals.forEach(s => {
+                if(new Date(s.time) >= today) {
+                    total++;
+                    if(s.status === 'WIN') wins++;
+                    else if(s.status === 'LOSS') losses++;
+                    else if(s.status === 'BREAK EVEN') be++;
+                    else if(s.status === 'PENDING') pending++;
+                }
+            });
+
+            let report = `🔹 *Total Trades:* ${total}\n`;
+            report += `✅ *Total Wins:* ${wins}\n`;
+            report += `❌ *Total Losses:* ${losses}\n`;
+            report += `⚖️ *Break Even:* ${be}\n`;
+            report += `⏳ *Running:* ${pending}\n\n`;
+
+            if ((wins + losses) > 0) {
+                let winRate = (wins / (wins + losses)) * 100;
+                report += `🎯 *Win Rate:* ${winRate.toFixed(2)}%\n`;
+            } else {
+                report += `🎯 *Win Rate:* N/A`;
+            }
+            return { reportText: report, summaryLine: `Total: ${total} | W: ${wins} | L: ${losses}` };
+        }
+
+        function updateSummary() {
+            let statusText = [];
+            if (isRunningS1) statusText.push("S1: ON"); else statusText.push("S1: OFF");
+            if (isRunningS2) statusText.push("S2: ON"); else statusText.push("S2: OFF");
+            
+            let stats = getDailyReport();
+            document.getElementById('lbl-summary').innerText = `${statusText.join(' | ')} | ${stats.summaryLine}`;
+        }
+
+        async function resetStats() {
+            if(confirm("Are you sure you want to reset all trades and stats?")) {
+                if(isRunningS1) stopStrategy('S1');
+                if(isRunningS2) stopStrategy('S2');
+
+                // Delete all signals from Firestore
+                if(currentUser) {
+                    for(let s of signals) {
+                        await deleteDoc(doc(getSignalsRef(), s.id.toString()));
+                    }
+                }
+                
+                signals = [];
+                activeTradesS1 = {};
+                activeTradesS2 = {};
+                document.getElementById('cards-container').innerHTML = '';
+                
+                if (typeof drawPlaceholder === 'function') {
+                    drawPlaceholder();
+                }
+
+                updateSummary();
+                alert("Stats and Trades reset successfully! Scanners have been stopped.");
+            }
+        }
+
+        // ==========================================
+        // TELEGRAM API & HISTORY PANEL LOGIC
+        // ==========================================
+        async function saveToTgHistory(msgId, text, isPhoto) {
+            let newMsg = { id: msgId, text: text, isPhoto: isPhoto, time: Date.now() };
+            tgHistory.unshift(newMsg);
+            renderTgHistory();
+
+            if(currentUser) {
+                await setDoc(doc(getTgHistoryRef(), msgId.toString()), newMsg);
+            }
+        }
+
+        async function removeFromTgHistory(msgId) {
+            tgHistory = tgHistory.filter(m => m.id !== msgId);
+            renderTgHistory();
+
+            if(currentUser) {
+                await deleteDoc(doc(getTgHistoryRef(), msgId.toString()));
+            }
+        }
+
+        async function updateTgHistoryText(msgId, newText) {
+            let msg = tgHistory.find(m => m.id === msgId);
+            if(msg) {
+                msg.text = newText;
+                renderTgHistory();
+
+                if(currentUser) {
+                    await updateDoc(doc(getTgHistoryRef(), msgId.toString()), { text: newText });
+                }
+            }
+        }
+
+        function renderTgHistory() {
+            const container = document.getElementById('tg-history-container');
+            container.innerHTML = '';
+            if (tgHistory.length === 0) {
+                container.innerHTML = '<p class="text-sm text-gray-500 text-center mt-4">No messages sent yet.</p>';
+                return;
+            }
+
+            tgHistory.forEach(msg => {
+                const dateObj = new Date(msg.time);
+                const timeStr = `${dateObj.getHours().toString().padStart(2, '0')}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
+                const badge = msg.isPhoto ? '<span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[10px] font-bold">Signal</span>' : '<span class="bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded text-[10px] font-bold">Text</span>';
+                
+                const encodedText = encodeURIComponent(msg.text);
+
+                const html = `
+                    <div class="bg-white p-3 rounded shadow border border-gray-200 text-sm">
+                        <div class="flex justify-between items-center mb-2">
+                            <div>${badge} <span class="text-gray-400 text-xs ml-1">${timeStr}</span></div>
+                            <div class="flex gap-2">
+                                <button onclick="promptEditTgMsg(${msg.id}, ${msg.isPhoto}, '${encodedText}')" class="text-blue-500 hover:text-blue-700 font-bold text-xs">Edit</button>
+                                <button onclick="deleteSingleTgMsg(${msg.id})" class="text-red-500 hover:text-red-700 font-bold text-xs">Delete</button>
+                            </div>
+                        </div>
+                        <div class="text-gray-700 text-xs whitespace-pre-wrap truncate max-h-16 overflow-hidden hover:max-h-full hover:whitespace-normal transition-all" title="Click edit to view full text">${msg.text}</div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        // ==========================================
+        // TELEGRAM NETWORK CALLS
+        // ==========================================
+        async function sendCustomMsg() {
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if(msg) {
+                try {
+                    let res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: TELEGRAM_CHAT_ID,
+                            text: `💬 *Admin:*\n${msg}`,
+                            parse_mode: 'Markdown'
+                        })
+                    });
+                    let data = await res.json();
+                    if(data.ok) {
+                        await saveToTgHistory(data.result.message_id, msg, false);
+                        input.value = "";
+                    }
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        async function sendTelegramPhoto(canvas, caption) {
+            return new Promise((resolve) => {
+                canvas.toBlob(async (blob) => {
+                    let formData = new FormData();
+                    formData.append('photo', blob, 'chart.png');
+                    formData.append('chat_id', TELEGRAM_CHAT_ID);
+                    formData.append('caption', caption);
+                    formData.append('parse_mode', 'Markdown');
+                    try {
+                        let res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        let data = await res.json();
+                        if(data.ok) {
+                            await saveToTgHistory(data.result.message_id, caption, true);
+                            resolve(data.result.message_id);
+                        } else {
+                            resolve(null);
+                        }
+                    } catch(e) { resolve(null); }
+                });
+            });
+        }
+
+        async function promptEditTgMsg(msgId, isPhoto, encodedOldText) {
+            let oldText = decodeURIComponent(encodedOldText);
+            let newText = prompt("Edit your message:", oldText);
+            if (newText !== null && newText.trim() !== "") {
+                try {
+                    let url = isPhoto ? `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageCaption` : `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageText`;
+                    let bodyData = { chat_id: TELEGRAM_CHAT_ID, message_id: msgId, parse_mode: 'Markdown' };
+                    
+                    if (isPhoto) bodyData.caption = newText;
+                    else bodyData.text = newText;
+
+                    let res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(bodyData)
+                    });
+                    let data = await res.json();
+                    if(data.ok) {
+                        await updateTgHistoryText(msgId, newText);
+                    } else {
+                        alert("Failed to edit. Telegram might block identical edits or old messages.");
+                    }
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        async function deleteSingleTgMsg(msgId) {
+            if(confirm("Are you sure you want to delete this message from Telegram?")) {
+                try {
+                    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/deleteMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: msgId })
+                    });
+                    await removeFromTgHistory(msgId);
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        async function deleteAllTgMessages() {
+            if(confirm("WARNING: This will delete ALL sent messages and signals from the Telegram channel. Proceed?")) {
+                // Keep an immutable copy of the history array to iterate safely
+                const historyCopy = [...tgHistory];
+                for(let msg of historyCopy) {
+                    try {
+                        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/deleteMessage`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: msg.id })
+                        });
+                        
+                        if(currentUser) {
+                            await deleteDoc(doc(getTgHistoryRef(), msg.id.toString()));
+                        }
+                    } catch(e) {}
+                }
+                tgHistory = [];
+                renderTgHistory();
+                alert("All tracking messages have been deleted from Telegram.");
+            }
+        }
+
+        async function replyTelegramMsg(msgId, text) {
+            if(!msgId) return;
+            try {
+                let res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: text,
+                        reply_to_message_id: msgId,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                let data = await res.json();
+                if(data.ok) await saveToTgHistory(data.result.message_id, text, false);
+            } catch(e) {}
+        }
+
+        async function sendDailyReportTG() {
+            let { reportText } = getDailyReport();
+            
+            if (lastReportMsgId) {
+                try {
+                    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/deleteMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: lastReportMsgId })
+                    });
+                    await removeFromTgHistory(lastReportMsgId);
+                } catch(e) {}
+            }
+            
+            try {
+                let fullText = `📊 *DAILY REPORT* 📊\n\n${reportText}`;
+                let res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: fullText,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                let data = await res.json();
+                if(data.ok) {
+                    lastReportMsgId = data.result.message_id;
+                    await saveToTgHistory(lastReportMsgId, fullText, false);
+                }
+            } catch(e) {}
+        }
+
+        function buildTgCaption(symbol, strategy, sigType, entry, tp, sl, pnlPct = 0.0) {
+            let sign = pnlPct > 0 ? "+" : "";
+            let emoji = strategy === "S1" ? "🛡️" : "🔥";
+            let strategyName = strategy === "S1" ? "Strategy 1 (SMC 15m)" : "Strategy 2 (ICT+SMC 15m/5m)";
+
+            return `🚨 *HIGH ACCURACY SETUP: ${symbol}* 🚨\n\n` +
+                   `${emoji} *[${strategyName}]*\n` +
+                   `📈 *Action:* ${sigType}\n` +
+                   `🎯 *Entry:* ${entry.toFixed(4)}\n` +
+                   `✅ *Target (TP):* ${tp.toFixed(4)}\n` +
+                   `🛑 *Stop Loss:* ${sl.toFixed(4)}\n\n` +
+                   `🛡️ *PURE PRICE ACTION SETUP:*\n` +
+                   `• Strong Displacement & FVG Validated.\n` +
+                   `• Move SL to Break Even (BE) at 1:1.\n\n` +
+                   `📊 *Live PnL:* \`${sign}${pnlPct.toFixed(3)}%\``;
+        }
+
+        // ==========================================
+        // MARKET DATA FETCHING
+        // ==========================================
+        async function getMarketData(symbol, interval) {
+            try {
+                let res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=100`);
+                let data = await res.json();
+                return data.map(d => ({
+                    timestamp: d[0],
+                    open: parseFloat(d[1]),
+                    high: parseFloat(d[2]),
+                    low: parseFloat(d[3]),
+                    close: parseFloat(d[4])
+                }));
+            } catch(e) { return null; }
+        }
+
+        // ==========================================
+        // STRATEGY 1 LOGIC (SMC 15m)
+        // ==========================================
+        function analyzeSmcStrict(df) {
+            if (!df || df.length < 50) return null;
+            let last = df[df.length - 1];
+            let entryPrice = last.close;
+
+            let avgBody = 0;
+            for(let k = df.length - 20; k < df.length; k++) {
+                avgBody += Math.abs(df[k].close - df[k].open);
+            }
+            avgBody /= 20;
+
+            for (let i = df.length - 20; i < df.length - 2; i++) {
+                // Bullish
+                if (df[i].high < df[i+2].low) {
+                    let fvgBottom = df[i].high; let fvgTop = df[i+2].low;
+                    let originLow = Math.min(df[i].low, df[i+1].low, df[i+2].low);
+                    
+                    let displacementBody = Math.abs(df[i+1].close - df[i+1].open);
+                    if (displacementBody < avgBody * 1.5) continue; 
+
+                    let mitigated = false;
+                    for (let j = i + 3; j < df.length - 1; j++) {
+                        if (df[j].low < fvgBottom) { mitigated = true; break; }
+                    }
+                    if (!mitigated) {
+                        if (last.low <= fvgTop && last.low >= fvgBottom * 0.99) {
+                            let candleRange = last.high - last.low;
+                            if (candleRange > 0 && last.close > last.open) {
+                                let closePct = (last.close - last.low) / candleRange;
+                                if (closePct > 0.55) { 
+                                    let sl = originLow * 0.999; let risk = entryPrice - sl;
+                                    if (risk > 0 && (fvgTop - fvgBottom) > (entryPrice * 0.0005)) {
+                                        let tp = entryPrice + (risk * 3.0); 
+                                        return ['BUY', entryPrice, tp, sl, risk, fvgTop, fvgBottom];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // Bearish
+                else if (df[i].low > df[i+2].high) {
+                    let fvgTop = df[i].low; let fvgBottom = df[i+2].high;
+                    let originHigh = Math.max(df[i].high, df[i+1].high, df[i+2].high);
+                    
+                    let displacementBody = Math.abs(df[i+1].close - df[i+1].open);
+                    if (displacementBody < avgBody * 1.5) continue;
+
+                    let mitigated = false;
+                    for (let j = i + 3; j < df.length - 1; j++) {
+                        if (df[j].high > fvgTop) { mitigated = true; break; }
+                    }
+                    if (!mitigated) {
+                        if (last.high >= fvgBottom && last.high <= fvgTop * 1.01) {
+                            let candleRange = last.high - last.low;
+                            if (candleRange > 0 && last.close < last.open) {
+                                let closePct = (last.high - last.close) / candleRange;
+                                if (closePct > 0.55) { 
+                                    let sl = originHigh * 1.001; let risk = sl - entryPrice;
+                                    if (risk > 0 && (fvgTop - fvgBottom) > (entryPrice * 0.0005)) {
+                                        let tp = entryPrice - (risk * 3.0);
+                                        return ['SELL', entryPrice, tp, sl, risk, fvgTop, fvgBottom];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        // ==========================================
+        // STRATEGY 2 LOGIC (ICT + SMC 15m/5m)
+        // ==========================================
+        function analyzeICT(df15m, df5m) {
+            if (!df15m || !df5m || df15m.length < 50 || df5m.length < 50) return null;
+
+            let bias = 0; 
+            let last15 = df15m[df15m.length - 1];
+            
+            let ema15 = df15m.slice(-20).reduce((acc, val) => acc + val.close, 0) / 20;
+            
+            let lowestLow20 = Math.min(...df15m.slice(-30, -10).map(d=>d.low));
+            let highestHigh20 = Math.max(...df15m.slice(-30, -10).map(d=>d.high));
+            let recentLow = Math.min(...df15m.slice(-10).map(d=>d.low));
+            let recentHigh = Math.max(...df15m.slice(-10).map(d=>d.high));
+
+            if (recentLow < lowestLow20 && last15.close > ema15) {
+                bias = 1; 
+            } else if (recentHigh > highestHigh20 && last15.close < ema15) {
+                bias = -1; 
+            }
+
+            if (bias === 0) return null;
+
+            let last5 = df5m[df5m.length - 1];
+            let entryPrice = last5.close;
+
+            let avgBody5 = 0;
+            for(let k = df5m.length - 20; k < df5m.length; k++) {
+                avgBody5 += Math.abs(df5m[k].close - df5m[k].open);
+            }
+            avgBody5 /= 20;
+
+            for (let i = df5m.length - 15; i < df5m.length - 2; i++) {
+                if (bias === 1) { 
+                    if (df5m[i].high < df5m[i+2].low) {
+                        let fvgBottom = df5m[i].high; let fvgTop = df5m[i+2].low;
+                        let originLow = Math.min(df5m[i].low, df5m[i+1].low, df5m[i+2].low);
+                        
+                        let displacementBody = Math.abs(df5m[i+1].close - df5m[i+1].open);
+                        if (displacementBody > avgBody5 * 1.5) {
+                            let mitigated = false;
+                            for (let j = i + 3; j < df5m.length - 1; j++) {
+                                if (df5m[j].low < fvgBottom) { mitigated = true; break; }
+                            }
+                            if (!mitigated) {
+                                if (last5.low <= fvgTop && last5.low >= fvgBottom * 0.99) {
+                                    let candleRange = last5.high - last5.low;
+                                    if (candleRange > 0 && last5.close > last5.open) {
+                                        let closePct = (last5.close - last5.low) / candleRange;
+                                        if (closePct > 0.60) { 
+                                            let sl = originLow * 0.999;
+                                            let risk = entryPrice - sl;
+                                            if (risk > 0) {
+                                                let tp = entryPrice + (risk * 2.5); 
+                                                return ['BUY', entryPrice, tp, sl, risk, fvgTop, fvgBottom];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else if (bias === -1) { 
+                    if (df5m[i].low > df5m[i+2].high) {
+                        let fvgTop = df5m[i].low; let fvgBottom = df5m[i+2].high;
+                        let originHigh = Math.max(df5m[i].high, df5m[i+1].high, df5m[i+2].high);
+                        
+                        let displacementBody = Math.abs(df5m[i+1].close - df5m[i+1].open);
+                        if (displacementBody > avgBody5 * 1.5) {
+                            let mitigated = false;
+                            for (let j = i + 3; j < df5m.length - 1; j++) {
+                                if (df5m[j].high > fvgTop) { mitigated = true; break; }
+                            }
+                            if (!mitigated) {
+                                if (last5.high >= fvgBottom && last5.high <= fvgTop * 1.01) {
+                                    let candleRange = last5.high - last5.low;
+                                    if (candleRange > 0 && last5.close < last5.open) {
+                                        let closePct = (last5.high - last5.close) / candleRange;
+                                        if (closePct > 0.60) { 
+                                            let sl = originHigh * 1.001;
+                                            let risk = sl - entryPrice;
+                                            if (risk > 0) {
+                                                let tp = entryPrice - (risk * 2.5);
+                                                return ['SELL', entryPrice, tp, sl, risk, fvgTop, fvgBottom];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        // ==========================================
+        // UI CHARTS & CARDS
+        // ==========================================
+        let marketCanvas, ctx;
+        function initCanvas() {
+            marketCanvas = document.getElementById('marketChart');
+            ctx = marketCanvas.getContext('2d');
+            marketCanvas.width = marketCanvas.parentElement.clientWidth - 32;
+            marketCanvas.height = marketCanvas.parentElement.clientHeight - 32;
+            drawPlaceholder();
+        }
+
+        window.addEventListener('resize', () => {
+            if(!marketCanvas) return;
+            marketCanvas.width = marketCanvas.parentElement.clientWidth - 32;
+            marketCanvas.height = marketCanvas.parentElement.clientHeight - 32;
+        });
+
+        function drawPlaceholder() {
+            ctx.clearRect(0,0, marketCanvas.width, marketCanvas.height);
+            ctx.fillStyle = '#6B7280';
+            ctx.font = '16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("Waiting for market data...", marketCanvas.width/2, marketCanvas.height/2);
+            ctx.textAlign = 'left';
+        }
+
+        function drawCandlestickChart(df, symbol, strategy, fvgTop, fvgBottom) {
+            const width = marketCanvas.width;
+            const height = marketCanvas.height;
+            ctx.clearRect(0, 0, width, height);
+
+            ctx.strokeStyle = 'rgba(0,0,0,0.05)';
+            ctx.lineWidth = 1;
+            for(let i=0; i<width; i+=50) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,height); ctx.stroke(); }
+            for(let i=0; i<height; i+=50) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(width,i); ctx.stroke(); }
+
+            let data = df.slice(-40);
+            if(data.length === 0) return;
+
+            let minLow = Math.min(...data.map(d => d.low)) * 0.999;
+            let maxHigh = Math.max(...data.map(d => d.high)) * 1.001;
+            let priceRange = maxHigh - minLow;
+
+            const padding = 20;
+            const drawHeight = height - (padding * 2);
+            const xStep = width / data.length;
+
+            const getY = (price) => height - padding - ((price - minLow) / priceRange) * drawHeight;
+
+            if (fvgTop && fvgBottom) {
+                ctx.fillStyle = strategy === 'S2' ? 'rgba(168, 85, 247, 0.2)' : 'rgba(245, 158, 11, 0.2)'; 
+                let yTop = getY(fvgTop);
+                let yBottom = getY(fvgBottom);
+                ctx.fillRect(0, yTop, width, Math.abs(yBottom - yTop));
+            }
+
+            data.forEach((d, i) => {
+                let x = i * xStep + (xStep / 2);
+                let yOpen = getY(d.open);
+                let yClose = getY(d.close);
+                let yHigh = getY(d.high);
+                let yLow = getY(d.low);
+
+                let isUp = d.close >= d.open;
+                let color = isUp ? '#10B981' : '#EF4444';
+                
+                ctx.strokeStyle = '#6B7280';
+                ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(x, yHigh); ctx.lineTo(x, yLow); ctx.stroke();
+
+                ctx.fillStyle = color;
+                let bodyHeight = Math.max(Math.abs(yClose - yOpen), 2);
+                let bodyY = Math.min(yOpen, yClose);
+                ctx.fillRect(x - (xStep * 0.3), bodyY, xStep * 0.6, bodyHeight);
+            });
+
+            ctx.fillStyle = '#1F2937';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.fillText(`[${strategy}] Setup: ${symbol}`, 15, 30);
+        }
+
+        function createSignalCard(symbol, strategy, sigType, entry, tp, sl) {
+            const container = document.getElementById('cards-container');
+            const cardId = `card-${strategy}-${symbol.replace('/','')}`;
+            if(document.getElementById(cardId)) return; 
+
+            const isBuy = sigType.includes('BUY');
+            const accent = isBuy ? 'bg-green-500' : 'bg-red-500';
+            const stratBadge = strategy === 'S1' ? 'bg-gray-800' : 'bg-purple-600';
+
+            const html = `
+                <div id="${cardId}" class="bg-white rounded border-2 border-transparent shadow p-3 transition">
+                    <div class="flex justify-between items-center border-b pb-2 mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="${stratBadge} text-white font-bold py-0.5 px-1.5 rounded text-[10px]">${strategy}</span>
+                            <span class="text-md font-bold text-gray-800">${symbol}</span>
+                        </div>
+                        <span class="${accent} text-white font-bold py-1 px-2 rounded text-[10px]">${sigType}</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-1 text-xs mb-2">
+                        <div class="text-gray-600">Entry: <br><span class="font-mono text-black font-semibold">${entry.toFixed(4)}</span></div>
+                        <div class="text-green-600">TP: <br><span class="font-mono font-semibold">${tp.toFixed(4)}</span></div>
+                        <div class="text-red-500" id="sl-${strategy}-${symbol}">SL: <br><span class="font-mono font-semibold">${sl.toFixed(4)}</span></div>
+                    </div>
+                    <div id="pnl-${strategy}-${symbol}" class="text-sm font-bold text-gray-500">
+                        Live PnL: 0.00%
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('afterbegin', html);
+        }
+
+        function updateCardPnl(symbol, strategy, pnlPct) {
+            let el = document.getElementById(`pnl-${strategy}-${symbol}`);
+            if(el) {
+                let sign = pnlPct > 0 ? "+" : "";
+                let colorClass = pnlPct > 0 ? "text-green-500" : "text-red-500";
+                el.className = `text-sm font-bold ${colorClass}`;
+                el.innerText = `Live PnL: ${sign}${pnlPct.toFixed(3)}%`;
+            }
+        }
+
+        function markCardClosed(symbol, strategy, status, pnlPct) {
+            let el = document.getElementById(`pnl-${strategy}-${symbol}`);
+            let card = document.getElementById(`card-${strategy}-${symbol.replace('/','')}`);
+            if(el && card) {
+                let colorClass = status === 'WIN' ? 'text-green-500' : (status === 'LOSS' ? 'text-red-500' : 'text-yellow-500');
+                let borderClass = status === 'WIN' ? 'border-green-500' : (status === 'LOSS' ? 'border-red-500' : 'border-yellow-500');
+                
+                let sign = pnlPct > 0 ? "+" : "";
+                el.className = `text-xs font-bold ${colorClass}`;
+                el.innerText = `CLOSED | PnL: ${sign}${pnlPct.toFixed(3)}% | ${status}`;
+                
+                card.classList.remove('border-transparent');
+                card.classList.add(borderClass);
+            }
+        }
+
+        // ==========================================
+        // MAIN UNIFIED SCANNER LOOP
+        // ==========================================
+        async function fetchTicker(symbol) {
+            try {
+                let res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
+                let data = await res.json();
+                return parseFloat(data.price);
+            } catch(e) { return null; }
+        }
+
+        async function processStrategy(strategyId, symbol, currentPrice, df15m, df5m) {
+            let activeTrades = strategyId === 'S1' ? activeTradesS1 : activeTradesS2;
+
+            if(!activeTrades[symbol]) {
+                let signalData = null;
+                if(strategyId === 'S1' && df15m) signalData = analyzeSmcStrict(df15m);
+                else if(strategyId === 'S2' && df15m && df5m) signalData = analyzeICT(df15m, df5m);
+
+                if(signalData) {
+                    let [sigType, entry, tp, sl, risk, fvgTop, fvgBottom] = signalData;
+                    
+                    // SAVE TO FIRESTORE
+                    let dbId = await saveSignal(symbol, sigType, entry, tp, sl, strategyId);
+                    
+                    createSignalCard(symbol, strategyId, sigType, entry, tp, sl);
+                    
+                    let dfForChart = strategyId === 'S1' ? df15m : df5m;
+                    drawCandlestickChart(dfForChart, symbol, strategyId, fvgTop, fvgBottom);
+
+                    let caption = buildTgCaption(symbol, strategyId, sigType, entry, tp, sl, 0.0);
+                    let tgMsgId = await sendTelegramPhoto(marketCanvas, caption);
+
+                    activeTrades[symbol] = {
+                        id: dbId, type: sigType, entry, tp, sl, 
+                        initialRisk: risk, beSet: false, 
+                        tgMsgId: tgMsgId, lastTgUpdate: Date.now(),
+                        fvgTop, fvgBottom
+                    };
+                }
+            } else {
+                let trade = activeTrades[symbol];
+                let pnlPct = 0, isWin = false, isLoss = false;
+
+                if (trade.type.includes('BUY')) {
+                    if (currentPrice >= (trade.entry + trade.initialRisk) && !trade.beSet) {
+                        trade.sl = trade.entry; trade.beSet = true; 
+                        document.getElementById(`sl-${strategyId}-${symbol}`).innerHTML = `SL: <br><span class="font-mono text-yellow-500 font-bold">BE (${trade.entry.toFixed(4)})</span>`;
+                    }
+                    pnlPct = ((currentPrice - trade.entry) / trade.entry) * 100;
+                    isWin = currentPrice >= trade.tp;
+                    isLoss = currentPrice <= trade.sl;
+                } else {
+                    if (currentPrice <= (trade.entry - trade.initialRisk) && !trade.beSet) {
+                        trade.sl = trade.entry; trade.beSet = true;
+                        document.getElementById(`sl-${strategyId}-${symbol}`).innerHTML = `SL: <br><span class="font-mono text-yellow-500 font-bold">BE (${trade.entry.toFixed(4)})</span>`;
+                    }
+                    pnlPct = ((trade.entry - currentPrice) / trade.entry) * 100;
+                    isWin = currentPrice <= trade.tp;
+                    isLoss = currentPrice >= trade.sl;
+                }
+
+                updateCardPnl(symbol, strategyId, pnlPct);
+
+                if (Date.now() - trade.lastTgUpdate > 15000) {
+                    if (trade.tgMsgId) {
+                        let newCap = buildTgCaption(symbol, strategyId, trade.type, trade.entry, trade.tp, trade.sl, pnlPct);
+                        fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageCaption`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: trade.tgMsgId, caption: newCap, parse_mode: 'Markdown' })
+                        });
+                        await updateTgHistoryText(trade.tgMsgId, newCap);
+                        trade.lastTgUpdate = Date.now();
+                    }
+                }
+
+                if(isWin || isLoss) {
+                    let status = 'BREAK EVEN';
+                    if (isLoss && !trade.beSet) status = 'LOSS';
+                    else if (isWin) status = 'WIN';
+
+                    // UPDATE FIRESTORE
+                    await updateSignalStatus(trade.id, status);
+                    markCardClosed(symbol, strategyId, status, pnlPct);
+
+                    if (status === 'LOSS') {
+                        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/deleteMessage`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: trade.tgMsgId })
+                        });
+                        await removeFromTgHistory(trade.tgMsgId);
+                    } else {
+                        if (status === 'WIN') {
+                            await replyTelegramMsg(trade.tgMsgId, `🚀💸🎉 BOOM! [${strategyId}] ${symbol} Target Hit! Beautiful execution! 🥂🔥`);
+                        } else if (status === 'BREAK EVEN') {
+                            await replyTelegramMsg(trade.tgMsgId, `🛡️ [${strategyId}] ${symbol} closed at Break Even (BE). 🤝`);
+                        }
+                    }
+
+                    delete activeTrades[symbol];
+                    await sendDailyReportTG();
+                }
+            }
+        }
+
+        async function tradingLoop() {
+            if(!isRunningS1 && !isRunningS2) return;
+
+            for(let symbol of symbolsToTrade) {
+                if(!isRunningS1 && !isRunningS2) break;
+
+                let currentPrice = await fetchTicker(symbol);
+                if(!currentPrice) continue;
+
+                let df15m = null;
+                let df5m = null;
+
+                if(isRunningS1 || isRunningS2) {
+                    df15m = await getMarketData(symbol, '15m');
+                }
+                if(isRunningS2) {
+                    df5m = await getMarketData(symbol, '5m');
+                }
+
+                if(isRunningS1) await processStrategy('S1', symbol, currentPrice, df15m, null);
+                if(isRunningS2) await processStrategy('S2', symbol, currentPrice, df15m, df5m);
+            }
+
+            updateSummary();
+            
+            if(isRunningS1 || isRunningS2) {
+                scannerInterval = setTimeout(tradingLoop, 4000); 
+            }
+        }
+
+        // ==========================================
+        // SCANNER CONTROLS
+        // ==========================================
+        function startStrategy(strat) {
+            if(strat === 'S1') {
+                isRunningS1 = true;
+                document.getElementById('btn-start-s1').disabled = true;
+                document.getElementById('btn-start-s1').classList.add('opacity-50', 'cursor-not-allowed');
+                document.getElementById('btn-stop-s1').disabled = false;
+                document.getElementById('btn-stop-s1').classList.remove('opacity-50', 'cursor-not-allowed');
+            } else if(strat === 'S2') {
+                isRunningS2 = true;
+                document.getElementById('btn-start-s2').disabled = true;
+                document.getElementById('btn-start-s2').classList.add('opacity-50', 'cursor-not-allowed');
+                document.getElementById('btn-stop-s2').disabled = false;
+                document.getElementById('btn-stop-s2').classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+            
+            updateSummary();
+            if(scannerInterval === null) {
+                tradingLoop();
+            }
+        }
+
+        function stopStrategy(strat) {
+            if(strat === 'S1') {
+                isRunningS1 = false;
+                document.getElementById('btn-start-s1').disabled = false;
+                document.getElementById('btn-start-s1').classList.remove('opacity-50', 'cursor-not-allowed');
+                document.getElementById('btn-stop-s1').disabled = true;
+                document.getElementById('btn-stop-s1').classList.add('opacity-50', 'cursor-not-allowed');
+            } else if(strat === 'S2') {
+                isRunningS2 = false;
+                document.getElementById('btn-start-s2').disabled = false;
+                document.getElementById('btn-start-s2').classList.remove('opacity-50', 'cursor-not-allowed');
+                document.getElementById('btn-stop-s2').disabled = true;
+                document.getElementById('btn-stop-s2').classList.add('opacity-50', 'cursor-not-allowed');
+            }
+            
+            updateSummary();
+            if(!isRunningS1 && !isRunningS2) {
+                clearTimeout(scannerInterval);
+                scannerInterval = null;
+            }
+        }
+
+        // Expose functions to window for HTML event handlers
+        window.loginWithEmail = loginWithEmail;
+        window.registerWithEmail = registerWithEmail;
+        window.logoutUser = logoutUser;
+        window.startStrategy = startStrategy;
+        window.stopStrategy = stopStrategy;
+        window.resetStats = resetStats;
+        window.deleteAllTgMessages = deleteAllTgMessages;
+        window.sendCustomMsg = sendCustomMsg;
+        window.promptEditTgMsg = promptEditTgMsg;
+        window.deleteSingleTgMsg = deleteSingleTgMsg;
+        window.drawPlaceholder = drawPlaceholder; // Expose for reset map
+
+    </script>
+</body>
+</html>
