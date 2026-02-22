@@ -21,16 +21,10 @@
     <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900">
         <div class="bg-gray-800 p-8 rounded-lg shadow-2xl w-80 text-center border border-gray-700">
             <div class="text-5xl mb-4">🔒</div>
-            <label class="block text-gray-300 font-semibold mb-4 text-lg">Firebase Login</label>
-            
-            <input type="email" id="email-input" class="w-full p-2 mb-3 text-center rounded bg-gray-700 text-white font-bold border border-gray-600 focus:outline-none focus:border-blue-500" placeholder="Email Address">
-            <input type="password" id="password-input" class="w-full p-2 text-center rounded bg-gray-700 text-white font-bold border border-gray-600 focus:outline-none focus:border-blue-500 mb-6" placeholder="Password">
-            
-            <div class="flex gap-2">
-                <button onclick="loginWithEmail()" class="w-1/2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-2 rounded transition">Login</button>
-                <button onclick="registerWithEmail()" class="w-1/2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-2 rounded transition">Sign Up</button>
-            </div>
-            <p id="login-error" class="text-red-400 mt-3 text-xs hidden-ui"></p>
+            <label class="block text-gray-300 font-semibold mb-4 text-lg">Enter Passcode:</label>
+            <input type="password" id="passcode-input" class="w-full p-2 text-center rounded bg-gray-700 text-white font-bold border border-gray-600 focus:outline-none focus:border-green-500 mb-6" placeholder="****">
+            <button onclick="checkPassword()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition">Login</button>
+            <p id="login-error" class="text-red-400 mt-3 text-sm hidden-ui">Invalid Password!</p>
         </div>
     </div>
 
@@ -39,12 +33,11 @@
         
         <!-- LEFT PANEL: Controls & Signals -->
         <div class="w-1/4 min-w-[340px] bg-gray-100 flex flex-col border-r border-gray-300 shadow-lg z-10 h-full">
-            <div class="bg-gray-800 py-4 px-4 shadow-md flex justify-between items-center">
-                <h1 class="text-white text-lg font-bold">⚡ Scalper Bot</h1>
-                <button onclick="logoutUser()" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-1 px-2 rounded shadow">Logout</button>
+            <div class="bg-gray-800 py-4 text-center shadow-md">
+                <h1 class="text-white text-lg font-bold">⚡ Dual Strategy Scalper</h1>
             </div>
 
-            <!-- Controls (Niyantran) -->
+            <!-- Controls -->
             <div class="p-3 bg-white border-b border-gray-300 flex flex-col gap-3">
                 
                 <!-- Strategy 1 Controls -->
@@ -69,10 +62,10 @@
                     <button onclick="resetStats()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-2 rounded text-xs shadow">📊 Reset All Stats & Trades</button>
                 </div>
                 
-                <div id="lbl-summary" class="text-xs font-bold text-gray-600 w-full text-center bg-gray-100 py-1 rounded border border-gray-200">Loading Data...</div>
+                <div id="lbl-summary" class="text-xs font-bold text-gray-600 w-full text-center bg-gray-100 py-1 rounded border border-gray-200">System Ready</div>
             </div>
 
-            <!-- Signal Cards Container (Sanket Card) -->
+            <!-- Signal Cards Container -->
             <div id="cards-container" class="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
                 <!-- Cards injected here -->
             </div>
@@ -96,7 +89,7 @@
                 <button onclick="deleteAllTgMessages()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-1 px-2 rounded shadow">Delete All</button>
             </div>
 
-            <!-- Chat Input (Kotha bola) -->
+            <!-- Chat Input -->
             <div class="bg-white p-3 flex flex-col gap-2 border-b border-gray-300 shadow-sm">
                 <label class="font-bold text-sm text-gray-700">Send Custom Message:</label>
                 <div class="flex gap-2">
@@ -113,36 +106,8 @@
         </div>
     </div>
 
-    <!-- MAIN JAVASCRIPT LOGIC AS MODULE -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDocs, getDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // ==========================================
-        // FIREBASE SETUP
-        // ==========================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyDIYaWd69CLk7DTTpqU7a-k1tj5dDgpsTw",
-            authDomain: "crypto0smc-scalper-web-app.firebaseapp.com",
-            projectId: "crypto0smc-scalper-web-app",
-            storageBucket: "crypto0smc-scalper-web-app.firebasestorage.app",
-            messagingSenderId: "361733677300",
-            appId: "1:361733677300:web:799cb6264ac7ce17453ea1",
-            measurementId: "G-TJFV8NMBDG"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let currentUser = null;
-
-        // DB References
-        const getSignalsRef = () => collection(db, 'artifacts', 'crypto-scalper', 'users', currentUser.uid, 'signals');
-        const getTgHistoryRef = () => collection(db, 'artifacts', 'crypto-scalper', 'users', currentUser.uid, 'tgHistory');
-        const getSettingsRef = () => doc(db, 'artifacts', 'crypto-scalper', 'users', currentUser.uid, 'settings', 'botState');
-
+    <!-- MAIN JAVASCRIPT LOGIC -->
+    <script>
         // ==========================================
         // SETTINGS & STATE
         // ==========================================
@@ -158,65 +123,24 @@
         let activeTradesS1 = {}; 
         let activeTradesS2 = {}; 
 
-        let signals = [];
-        let tgHistory = [];
-
         const symbolsToTrade = [
             'BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 
             'ADAUSDT', 'DOGEUSDT', 'MATICUSDT', 'LINKUSDT', 'AVAXUSDT'
         ];
 
-        // ==========================================
-        // AUTHENTICATION LOGIC (Login system)
-        // ==========================================
-        function showError(msg) {
-            let errEl = document.getElementById('login-error');
-            errEl.innerText = msg;
-            errEl.classList.remove('hidden-ui');
-        }
+        let tgHistory = JSON.parse(localStorage.getItem('tg_history') || '[]');
 
-        async function loginWithEmail() {
-            const email = document.getElementById('email-input').value;
-            const pwd = document.getElementById('password-input').value;
-            if(!email || !pwd) return showError("Please enter email and password");
-            try {
-                await signInWithEmailAndPassword(auth, email, pwd);
-            } catch (error) {
-                showError(error.message);
-            }
-        }
-
-        async function registerWithEmail() {
-            const email = document.getElementById('email-input').value;
-            const pwd = document.getElementById('password-input').value;
-            if(!email || !pwd) return showError("Please enter email and password");
-            try {
-                await createUserWithEmailAndPassword(auth, email, pwd);
-            } catch (error) {
-                showError(error.message);
-            }
-        }
-
-        async function logoutUser() {
-            await signOut(auth);
-        }
-
-        document.getElementById('password-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') loginWithEmail();
-        });
-
-        // Listen for auth state changes
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('login-error').classList.add('hidden-ui');
+        function checkPassword() {
+            const pwd = document.getElementById('passcode-input').value;
+            if (pwd === "2007") {
                 document.getElementById('login-screen').classList.add('hidden-ui');
                 document.getElementById('main-app').classList.remove('hidden-ui');
-                
-                await loadDataFromFirestore();
                 initCanvas();
                 
-                // Auto-resume logic if state was previously ON (Reload korle auto chalu hobe)
+                // Reload state from local storage
+                loadDataFromLocalStorage();
+
+                // Restore UI buttons based on saved state
                 if (isRunningS1) {
                     document.getElementById('btn-start-s1').disabled = true;
                     document.getElementById('btn-start-s1').classList.add('opacity-50', 'cursor-not-allowed');
@@ -232,79 +156,57 @@
 
                 updateSummary();
 
+                // Auto-start scanner if state was ON
                 if (isRunningS1 || isRunningS2) {
                     if (scannerInterval === null) {
                         tradingLoop();
                     }
                 }
             } else {
-                currentUser = null;
-                document.getElementById('main-app').classList.add('hidden-ui');
-                document.getElementById('login-screen').classList.remove('hidden-ui');
-                
-                if(isRunningS1) stopStrategy('S1', false);
-                if(isRunningS2) stopStrategy('S2', false);
-                document.getElementById('cards-container').innerHTML = '';
+                document.getElementById('login-error').classList.remove('hidden-ui');
+                document.getElementById('passcode-input').value = "";
             }
+        }
+
+        document.getElementById('passcode-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') checkPassword();
         });
 
         // ==========================================
-        // DATABASE / FIRESTORE LOGIC (Data save kora)
+        // DATABASE / STORAGE LOGIC (Local Storage)
         // ==========================================
-        async function loadDataFromFirestore() {
-            try {
-                // Load Settings (Bot state auto-resume)
-                const settingsSnap = await getDoc(getSettingsRef());
-                if (settingsSnap.exists()) {
-                    const state = settingsSnap.data();
-                    isRunningS1 = state.runS1 || false;
-                    isRunningS2 = state.runS2 || false;
-                }
-
-                // Fetch Signals
-                const sigSnapshot = await getDocs(getSignalsRef());
-                signals = sigSnapshot.docs.map(d => d.data());
-
-                // Fetch Telegram History
-                const tgSnapshot = await getDocs(getTgHistoryRef());
-                tgHistory = tgSnapshot.docs.map(d => d.data());
-                tgHistory.sort((a, b) => b.time - a.time);
-
-                renderTgHistory();
-            } catch (e) {
-                console.error("Error fetching data:", e);
-            }
+        function saveBotState() {
+            localStorage.setItem('botState', JSON.stringify({ runS1: isRunningS1, runS2: isRunningS2 }));
         }
 
-        async function saveBotState() {
-            if(currentUser) {
-                await setDoc(getSettingsRef(), { runS1: isRunningS1, runS2: isRunningS2 }, { merge: true });
-            }
+        function loadDataFromLocalStorage() {
+            let state = JSON.parse(localStorage.getItem('botState') || '{}');
+            isRunningS1 = state.runS1 || false;
+            isRunningS2 = state.runS2 || false;
+            
+            // Re-render TG history immediately
+            renderTgHistory();
         }
 
-        async function saveSignal(symbol, type, entry, tp, sl, strategy) {
+        function saveSignal(symbol, type, entry, tp, sl, strategy) {
+            let signals = JSON.parse(localStorage.getItem('smc_signals') || '[]');
             let sigId = Date.now() + Math.floor(Math.random() * 100);
-            let newSig = { id: sigId, time: new Date().toISOString(), symbol, type, entry, tp, sl, status: 'PENDING', strategy: strategy };
-            
-            signals.push(newSig);
-            
-            if(currentUser) {
-                await setDoc(doc(getSignalsRef(), sigId.toString()), newSig);
-            }
+            signals.push({ id: sigId, time: new Date().toISOString(), symbol, type, entry, tp, sl, status: 'PENDING', strategy: strategy });
+            localStorage.setItem('smc_signals', JSON.stringify(signals));
             return sigId;
         }
 
-        async function updateSignalStatus(sigId, newStatus) {
+        function updateSignalStatus(sigId, newStatus) {
+            let signals = JSON.parse(localStorage.getItem('smc_signals') || '[]');
             let signal = signals.find(s => s.id === sigId);
             if(signal) {
                 signal.status = newStatus;
-                if(currentUser) {
-                    await updateDoc(doc(getSignalsRef(), sigId.toString()), { status: newStatus });
-                }
+                localStorage.setItem('smc_signals', JSON.stringify(signals));
             }
         }
 
         function getDailyReport() {
+            let signals = JSON.parse(localStorage.getItem('smc_signals') || '[]');
             let today = new Date();
             today.setHours(0,0,0,0);
             
@@ -344,19 +246,12 @@
             document.getElementById('lbl-summary').innerText = `${statusText.join(' | ')} | ${stats.summaryLine}`;
         }
 
-        async function resetStats() {
+        function resetStats() {
             if(confirm("Are you sure you want to reset all trades and stats?")) {
                 if(isRunningS1) stopStrategy('S1');
                 if(isRunningS2) stopStrategy('S2');
 
-                // Delete all signals from Firestore
-                if(currentUser) {
-                    for(let s of signals) {
-                        await deleteDoc(doc(getSignalsRef(), s.id.toString()));
-                    }
-                }
-                
-                signals = [];
+                localStorage.removeItem('smc_signals');
                 activeTradesS1 = {};
                 activeTradesS2 = {};
                 document.getElementById('cards-container').innerHTML = '';
@@ -373,34 +268,24 @@
         // ==========================================
         // TELEGRAM API & HISTORY PANEL LOGIC
         // ==========================================
-        async function saveToTgHistory(msgId, text, isPhoto) {
-            let newMsg = { id: msgId, text: text, isPhoto: isPhoto, time: Date.now() };
-            tgHistory.unshift(newMsg);
+        function saveToTgHistory(msgId, text, isPhoto) {
+            tgHistory.unshift({ id: msgId, text: text, isPhoto: isPhoto, time: Date.now() });
+            localStorage.setItem('tg_history', JSON.stringify(tgHistory));
             renderTgHistory();
-
-            if(currentUser) {
-                await setDoc(doc(getTgHistoryRef(), msgId.toString()), newMsg);
-            }
         }
 
-        async function removeFromTgHistory(msgId) {
+        function removeFromTgHistory(msgId) {
             tgHistory = tgHistory.filter(m => m.id !== msgId);
+            localStorage.setItem('tg_history', JSON.stringify(tgHistory));
             renderTgHistory();
-
-            if(currentUser) {
-                await deleteDoc(doc(getTgHistoryRef(), msgId.toString()));
-            }
         }
 
-        async function updateTgHistoryText(msgId, newText) {
+        function updateTgHistoryText(msgId, newText) {
             let msg = tgHistory.find(m => m.id === msgId);
             if(msg) {
                 msg.text = newText;
+                localStorage.setItem('tg_history', JSON.stringify(tgHistory));
                 renderTgHistory();
-
-                if(currentUser) {
-                    await updateDoc(doc(getTgHistoryRef(), msgId.toString()), { text: newText });
-                }
             }
         }
 
@@ -454,7 +339,7 @@
                     });
                     let data = await res.json();
                     if(data.ok) {
-                        await saveToTgHistory(data.result.message_id, msg, false);
+                        saveToTgHistory(data.result.message_id, msg, false);
                         input.value = "";
                     }
                 } catch(e) { console.error(e); }
@@ -476,7 +361,7 @@
                         });
                         let data = await res.json();
                         if(data.ok) {
-                            await saveToTgHistory(data.result.message_id, caption, true);
+                            saveToTgHistory(data.result.message_id, caption, true);
                             resolve(data.result.message_id);
                         } else {
                             resolve(null);
@@ -504,7 +389,7 @@
                     });
                     let data = await res.json();
                     if(data.ok) {
-                        await updateTgHistoryText(msgId, newText);
+                        updateTgHistoryText(msgId, newText);
                     } else {
                         alert("Failed to edit. Telegram might block identical edits or old messages.");
                     }
@@ -520,7 +405,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: msgId })
                     });
-                    await removeFromTgHistory(msgId);
+                    removeFromTgHistory(msgId);
                 } catch(e) { console.error(e); }
             }
         }
@@ -535,13 +420,10 @@
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: msg.id })
                         });
-                        
-                        if(currentUser) {
-                            await deleteDoc(doc(getTgHistoryRef(), msg.id.toString()));
-                        }
                     } catch(e) {}
                 }
                 tgHistory = [];
+                localStorage.setItem('tg_history', JSON.stringify([]));
                 renderTgHistory();
                 alert("All tracking messages have been deleted from Telegram.");
             }
@@ -561,7 +443,7 @@
                     })
                 });
                 let data = await res.json();
-                if(data.ok) await saveToTgHistory(data.result.message_id, text, false);
+                if(data.ok) saveToTgHistory(data.result.message_id, text, false);
             } catch(e) {}
         }
 
@@ -575,7 +457,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: lastReportMsgId })
                     });
-                    await removeFromTgHistory(lastReportMsgId);
+                    removeFromTgHistory(lastReportMsgId);
                 } catch(e) {}
             }
             
@@ -593,7 +475,7 @@
                 let data = await res.json();
                 if(data.ok) {
                     lastReportMsgId = data.result.message_id;
-                    await saveToTgHistory(lastReportMsgId, fullText, false);
+                    saveToTgHistory(lastReportMsgId, fullText, false);
                 }
             } catch(e) {}
         }
@@ -647,13 +529,12 @@
             avgBody /= 20;
 
             for (let i = df.length - 20; i < df.length - 2; i++) {
-                // Bullish
                 if (df[i].high < df[i+2].low) {
                     let fvgBottom = df[i].high; let fvgTop = df[i+2].low;
                     let originLow = Math.min(df[i].low, df[i+1].low, df[i+2].low);
                     
                     let displacementBody = Math.abs(df[i+1].close - df[i+1].open);
-                    if (displacementBody < avgBody * 1.5) continue; 
+                    if (displacementBody < avgBody * 1.2) continue;
 
                     let mitigated = false;
                     for (let j = i + 3; j < df.length - 1; j++) {
@@ -666,8 +547,8 @@
                                 let closePct = (last.close - last.low) / candleRange;
                                 if (closePct > 0.55) { 
                                     let sl = originLow * 0.999; let risk = entryPrice - sl;
-                                    if (risk > 0 && (fvgTop - fvgBottom) > (entryPrice * 0.0005)) {
-                                        let tp = entryPrice + (risk * 3.0); 
+                                    if (risk > 0 && (fvgTop - fvgBottom) > (entryPrice * 0.0003)) {
+                                        let tp = entryPrice + (risk * 2.5);
                                         return ['BUY', entryPrice, tp, sl, risk, fvgTop, fvgBottom];
                                     }
                                 }
@@ -675,13 +556,12 @@
                         }
                     }
                 }
-                // Bearish
                 else if (df[i].low > df[i+2].high) {
                     let fvgTop = df[i].low; let fvgBottom = df[i+2].high;
                     let originHigh = Math.max(df[i].high, df[i+1].high, df[i+2].high);
                     
                     let displacementBody = Math.abs(df[i+1].close - df[i+1].open);
-                    if (displacementBody < avgBody * 1.5) continue;
+                    if (displacementBody < avgBody * 1.2) continue;
 
                     let mitigated = false;
                     for (let j = i + 3; j < df.length - 1; j++) {
@@ -694,8 +574,8 @@
                                 let closePct = (last.high - last.close) / candleRange;
                                 if (closePct > 0.55) { 
                                     let sl = originHigh * 1.001; let risk = sl - entryPrice;
-                                    if (risk > 0 && (fvgTop - fvgBottom) > (entryPrice * 0.0005)) {
-                                        let tp = entryPrice - (risk * 3.0);
+                                    if (risk > 0 && (fvgTop - fvgBottom) > (entryPrice * 0.0003)) {
+                                        let tp = entryPrice - (risk * 2.5);
                                         return ['SELL', entryPrice, tp, sl, risk, fvgTop, fvgBottom];
                                     }
                                 }
@@ -740,7 +620,7 @@
             }
             avgBody5 /= 20;
 
-            for (let i = df5m.length - 15; i < df5m.length - 2; i++) {
+            for (let i = df5m.length - 80; i < df5m.length - 2; i++) {
                 if (bias === 1) { 
                     if (df5m[i].high < df5m[i+2].low) {
                         let fvgBottom = df5m[i].high; let fvgTop = df5m[i+2].low;
@@ -965,8 +845,7 @@
                 if(signalData) {
                     let [sigType, entry, tp, sl, risk, fvgTop, fvgBottom] = signalData;
                     
-                    // SAVE TO FIRESTORE
-                    let dbId = await saveSignal(symbol, sigType, entry, tp, sl, strategyId);
+                    let dbId = saveSignal(symbol, sigType, entry, tp, sl, strategyId);
                     
                     createSignalCard(symbol, strategyId, sigType, entry, tp, sl);
                     
@@ -1015,7 +894,7 @@
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: trade.tgMsgId, caption: newCap, parse_mode: 'Markdown' })
                         });
-                        await updateTgHistoryText(trade.tgMsgId, newCap);
+                        updateTgHistoryText(trade.tgMsgId, newCap);
                         trade.lastTgUpdate = Date.now();
                     }
                 }
@@ -1025,8 +904,7 @@
                     if (isLoss && !trade.beSet) status = 'LOSS';
                     else if (isWin) status = 'WIN';
 
-                    // UPDATE FIRESTORE
-                    await updateSignalStatus(trade.id, status);
+                    updateSignalStatus(trade.id, status);
                     markCardClosed(symbol, strategyId, status, pnlPct);
 
                     if (status === 'LOSS') {
@@ -1035,10 +913,10 @@
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: trade.tgMsgId })
                         });
-                        await removeFromTgHistory(trade.tgMsgId);
+                        removeFromTgHistory(trade.tgMsgId);
                     } else {
                         if (status === 'WIN') {
-                            await replyTelegramMsg(trade.tgMsgId, `🚀💸🎉 BOOM! [${strategyId}] ${symbol} Target Hit! Beautiful execution! 🥂🔥`);
+                            await replyTelegramMsg(trade.tgMsgId, `🚀💸🎉 BOOM! [${strategyId}] ${symbol} Target Hit! 🥂🔥`);
                         } else if (status === 'BREAK EVEN') {
                             await replyTelegramMsg(trade.tgMsgId, `🛡️ [${strategyId}] ${symbol} closed at Break Even (BE). 🤝`);
                         }
@@ -1083,7 +961,7 @@
         // ==========================================
         // SCANNER CONTROLS (State Update)
         // ==========================================
-        function startStrategy(strat, saveToDb = true) {
+        function startStrategy(strat) {
             if(strat === 'S1') {
                 isRunningS1 = true;
                 document.getElementById('btn-start-s1').disabled = true;
@@ -1098,7 +976,7 @@
                 document.getElementById('btn-stop-s2').classList.remove('opacity-50', 'cursor-not-allowed');
             }
             
-            if (saveToDb) saveBotState(); // Save state to Firebase
+            saveBotState(); 
             updateSummary();
             
             if(scannerInterval === null) {
@@ -1106,7 +984,7 @@
             }
         }
 
-        function stopStrategy(strat, saveToDb = true) {
+        function stopStrategy(strat) {
             if(strat === 'S1') {
                 isRunningS1 = false;
                 document.getElementById('btn-start-s1').disabled = false;
@@ -1121,7 +999,7 @@
                 document.getElementById('btn-stop-s2').classList.add('opacity-50', 'cursor-not-allowed');
             }
             
-            if (saveToDb) saveBotState(); // Save state to Firebase
+            saveBotState(); 
             updateSummary();
             
             if(!isRunningS1 && !isRunningS2) {
@@ -1129,20 +1007,6 @@
                 scannerInterval = null;
             }
         }
-
-        // Expose functions to window for HTML event handlers
-        window.loginWithEmail = loginWithEmail;
-        window.registerWithEmail = registerWithEmail;
-        window.logoutUser = logoutUser;
-        window.startStrategy = startStrategy;
-        window.stopStrategy = stopStrategy;
-        window.resetStats = resetStats;
-        window.deleteAllTgMessages = deleteAllTgMessages;
-        window.sendCustomMsg = sendCustomMsg;
-        window.promptEditTgMsg = promptEditTgMsg;
-        window.deleteSingleTgMsg = deleteSingleTgMsg;
-        window.drawPlaceholder = drawPlaceholder; // Expose for reset map
-
     </script>
 </body>
 </html>
