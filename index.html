@@ -21,7 +21,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
 
-    <!-- Tailwind Config for Premium Theme -->
+    <!-- Tailwind Config for B&W Theme -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -31,16 +31,9 @@
                         sans: ['Outfit', 'sans-serif'],
                     },
                     colors: {
-                        brand: {
-                            gold: '#D4AF37',
-                            blue: '#0EA5E9',
-                            dark: '#0B0F19',
-                            panel: '#151A27',
-                            neon: '#39FF14'
-                        }
-                    },
-                    backgroundImage: {
-                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        black: '#000000',
+                        white: '#ffffff',
+                        panel: '#0a0a0a'
                     }
                 }
             }
@@ -48,26 +41,26 @@
     </script>
 
     <style>
-        /* Custom Premium Styles */
+        /* Custom Premium Black & White Styles */
         body {
-            background-color: #0B0F19;
+            background-color: #000000;
             color: #ffffff;
             background-image: 
-                radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(212, 175, 55, 0.1) 0px, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.03) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(255, 255, 255, 0.03) 0px, transparent 50%);
             background-attachment: fixed;
         }
 
         .glass-panel {
-            background: rgba(21, 26, 39, 0.7);
+            background: rgba(10, 10, 10, 0.8);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
 
-        .gold-text-gradient {
-            background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+        .white-text-gradient {
+            background: linear-gradient(to right, #ffffff, #9ca3af);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -75,9 +68,9 @@
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0B0F19; }
-        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+        ::-webkit-scrollbar-track { background: #000000; }
+        ::-webkit-scrollbar-thumb { background: #333333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ffffff; }
 
         /* Tabs */
         .tab-content { display: none; opacity: 0; transition: opacity 0.4s ease; }
@@ -88,15 +81,16 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        .nav-link { position: relative; padding-bottom: 0.25rem; }
+        .nav-link { position: relative; padding-bottom: 0.25rem; color: #9ca3af; transition: color 0.3s ease; }
         .nav-link::after {
             content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 0;
-            background-color: #D4AF37; transition: width 0.3s ease;
+            background-color: #ffffff; transition: width 0.3s ease;
         }
+        .nav-link:hover { color: #ffffff; }
         .nav-link:hover::after, .nav-link.active::after { width: 100%; }
-        .nav-link.active { color: #D4AF37; }
+        .nav-link.active { color: #ffffff; font-weight: bold; }
 
-        /* Session Chart CSS Grid (BabyPips Style) */
+        /* Session Chart CSS Grid (BabyPips Style - Grayscale) */
         .timeline-grid {
             display: grid;
             grid-template-columns: repeat(24, 1fr);
@@ -108,7 +102,7 @@
         .timeline-hour {
             text-align: center;
             font-size: 0.65rem;
-            color: #9ca3af;
+            color: #6b7280;
             border-left: 1px solid rgba(255,255,255,0.1);
             position: relative;
         }
@@ -118,7 +112,7 @@
             height: 40px;
             margin-bottom: 8px;
             position: relative;
-            background: rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.05);
             border-radius: 4px;
         }
         .session-bar {
@@ -129,55 +123,97 @@
             justify-content: center;
             font-weight: bold;
             font-size: 0.75rem;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            color: #000000;
             transition: all 0.5s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
         }
         #current-time-line {
             position: absolute;
             top: 0;
             bottom: 0;
             width: 2px;
-            background-color: #39FF14;
+            background-color: #ffffff;
             z-index: 10;
-            box-shadow: 0 0 10px #39FF14;
+            box-shadow: 0 0 10px #ffffff;
             transition: left 60s linear;
         }
         .current-time-label {
             position: absolute;
             top: -20px;
             transform: translateX(-50%);
-            background: #39FF14;
+            background: #ffffff;
             color: black;
             padding: 2px 6px;
             border-radius: 4px;
             font-size: 0.7rem;
             font-weight: bold;
         }
+
+        /* 3D Animations & Highlights for 1-ON-1 Section */
+        @keyframes float3d {
+            0% { transform: translateY(0) rotateX(0) rotateY(0) scale(1); box-shadow: 0 10px 30px -10px rgba(255, 255, 255, 0.3); }
+            50% { transform: translateY(-10px) rotateX(5deg) rotateY(-2deg) scale(1.02); box-shadow: 0 20px 50px -10px rgba(255, 255, 255, 0.7); }
+            100% { transform: translateY(0) rotateX(0) rotateY(0) scale(1); box-shadow: 0 10px 30px -10px rgba(255, 255, 255, 0.3); }
+        }
+        .animate-float-3d {
+            animation: float3d 4s ease-in-out infinite;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        .badge-3d {
+            border-bottom: 6px solid #444;
+            border-right: 4px solid #333;
+        }
+        
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 8px 0;
+            white-space: nowrap;
+        }
+        .ticker-move {
+            display: inline-block;
+            white-space: nowrap;
+            padding-right: 100%;
+            animation: ticker 25s linear infinite;
+        }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col font-sans">
 
+    <!-- Scrolling Ticker for 1-on-1 Emphasis -->
+    <div class="ticker-wrap relative z-50">
+        <div class="ticker-move text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-white">
+            <span class="mx-4 text-gray-400">⚡</span> STRICTLY 1-ON-1 INDIVIDUAL MENTORSHIP
+            <span class="mx-4 text-gray-400">⚡</span> NO CROWDED CLASSES
+            <span class="mx-4 text-gray-400">⚡</span> TAILORED PERSONAL SESSIONS
+            <span class="mx-4 text-gray-400">⚡</span> STRICTLY 1-ON-1 INDIVIDUAL MENTORSHIP
+            <span class="mx-4 text-gray-400">⚡</span> NO CROWDED CLASSES
+            <span class="mx-4 text-gray-400">⚡</span> TAILORED PERSONAL SESSIONS
+            <span class="mx-4 text-gray-400">⚡</span> STRICTLY 1-ON-1 INDIVIDUAL MENTORSHIP
+        </div>
+    </div>
+
     <nav class="sticky top-0 w-full z-50 glass-panel border-b border-gray-800 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
+            <div class="flex items-center justify-between h-24">
                 <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer group" onclick="switchTab('home')">
-                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-brand-gold to-yellow-800 flex items-center justify-center font-bold text-2xl text-white shadow-[0_0_15px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform">
-                        TR
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-extrabold text-xl tracking-widest uppercase text-white leading-none">The Trap Room</span>
-                        <span class="text-[10px] text-brand-gold tracking-[0.2em] uppercase mt-1">Elite Trading</span>
-                    </div>
+                <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="switchTab('home')">
+                    <img src="https://github.com/ayodayanilukshana-alt/crypto-bot/blob/6058312e26405cb6fa2eed96b625d689b14eb21c/Edgy%20Urban%20Logo%20for%20The%20Trap%20Room%20(1).png?raw=true" alt="The Trap Room Logo" class="h-16 md:h-20 object-contain transform group-hover:scale-105 transition-transform duration-300 filter grayscale bg-white p-2 rounded-lg">
                 </div>
                 
                 <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide text-gray-300">
-                    <button onclick="switchTab('home')" class="nav-link active hover:text-white transition-colors" data-target="home">Mentorship & Pricing</button>
-                    <button onclick="switchTab('tools')" class="nav-link hover:text-white transition-colors" data-target="tools">Advanced Tools</button>
-                    <button onclick="switchTab('chart')" class="nav-link hover:text-white transition-colors" data-target="chart">Live Terminal</button>
-                    <button onclick="switchTab('history')" class="nav-link hover:text-white transition-colors" data-target="history">Knowledge Base</button>
+                <div class="hidden md:flex items-center space-x-8 text-sm tracking-wide">
+                    <button onclick="switchTab('home')" class="nav-link active" data-target="home">Mentorship & Pricing</button>
+                    <button onclick="switchTab('tools')" class="nav-link" data-target="tools">Advanced Tools</button>
+                    <button onclick="switchTab('chart')" class="nav-link" data-target="chart">Live Terminal</button>
+                    <button onclick="switchTab('history')" class="nav-link" data-target="history">Knowledge Base</button>
                 </div>
 
                 <!-- Mobile Menu Button -->
@@ -192,10 +228,10 @@
         <!-- Mobile Menu Panel -->
         <div id="mobile-menu" class="hidden md:hidden glass-panel border-t border-gray-800 absolute w-full">
             <div class="px-4 py-4 flex flex-col space-y-4">
-                <button onclick="switchTab('home'); closeMobileMenu();" class="text-left font-bold text-gray-300 border-b border-gray-800 pb-2">Mentorship & Pricing</button>
-                <button onclick="switchTab('tools'); closeMobileMenu();" class="text-left font-bold text-gray-300 border-b border-gray-800 pb-2">Advanced Tools</button>
-                <button onclick="switchTab('chart'); closeMobileMenu();" class="text-left font-bold text-gray-300 border-b border-gray-800 pb-2">Live Terminal</button>
-                <button onclick="switchTab('history'); closeMobileMenu();" class="text-left font-bold text-gray-300 pb-2">Knowledge Base</button>
+                <button onclick="switchTab('home'); closeMobileMenu();" class="text-left font-bold text-gray-300 hover:text-white border-b border-gray-800 pb-2">Mentorship & Pricing</button>
+                <button onclick="switchTab('tools'); closeMobileMenu();" class="text-left font-bold text-gray-300 hover:text-white border-b border-gray-800 pb-2">Advanced Tools</button>
+                <button onclick="switchTab('chart'); closeMobileMenu();" class="text-left font-bold text-gray-300 hover:text-white border-b border-gray-800 pb-2">Live Terminal</button>
+                <button onclick="switchTab('history'); closeMobileMenu();" class="text-left font-bold text-gray-300 hover:text-white pb-2">Knowledge Base</button>
             </div>
         </div>
     </nav>
@@ -207,30 +243,33 @@
             
             <!-- Hero Section -->
             <section class="px-4 max-w-7xl mx-auto mb-20 text-center relative" data-aos="fade-up">
-                <!-- Decorative glowing orbs -->
-                <div class="absolute top-1/2 left-1/4 w-64 h-64 bg-brand-blue rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-pulse"></div>
-                <div class="absolute top-1/2 right-1/4 w-64 h-64 bg-brand-gold rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-pulse" style="animation-delay: 1s;"></div>
                 
                 <div class="relative z-10">
-                    <div class="inline-flex items-center gap-2 border border-brand-gold/30 bg-brand-gold/10 px-4 py-1.5 rounded-full mb-8">
-                        <span class="w-2 h-2 rounded-full bg-brand-gold animate-ping"></span>
-                        <span class="text-xs font-bold uppercase tracking-widest text-brand-gold">Enrollment Open</span>
+                    <div class="inline-flex items-center gap-2 border border-white/30 bg-white/5 px-4 py-1.5 rounded-full mb-8">
+                        <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                        <span class="text-xs font-bold uppercase tracking-widest text-white">Enrollment Open</span>
                     </div>
                     
                     <h1 class="text-5xl md:text-7xl font-extrabold uppercase tracking-tight mb-6 leading-tight">
-                        Escape the <span class="gold-text-gradient">Retail Matrix</span>
+                        Escape the <span class="white-text-gradient">Retail Matrix</span>
                     </h1>
                     
-                    <!-- MASSIVE 1-ON-1 BADGE -->
-                    <div class="my-10" data-aos="zoom-in" data-aos-delay="200">
-                        <div class="inline-flex flex-col items-center justify-center p-1 rounded-2xl bg-gradient-to-r from-brand-gold via-yellow-200 to-brand-gold shadow-[0_0_50px_rgba(212,175,55,0.4)] transform hover:scale-105 transition-transform duration-300">
-                            <div class="bg-[#0B0F19] px-6 py-5 md:px-10 md:py-6 rounded-xl flex items-center gap-5 md:gap-8">
-                                <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-brand-gold/20 flex items-center justify-center border border-brand-gold/50 shadow-[inset_0_0_20px_rgba(212,175,55,0.5)]">
-                                    <i class="fas fa-user-tie text-4xl md:text-5xl text-brand-gold"></i>
+                    <!-- MASSIVE 1-ON-1 3D BADGE -->
+                    <div class="my-16 perspective-1000" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="inline-flex flex-col items-center justify-center p-1 rounded-3xl bg-gradient-to-b from-white to-gray-600 animate-float-3d badge-3d">
+                            <div class="bg-black px-8 py-6 md:px-14 md:py-8 rounded-2xl flex items-center gap-6 md:gap-10">
+                                <div class="relative">
+                                    <div class="absolute inset-0 bg-white blur-md opacity-50 animate-pulse rounded-full"></div>
+                                    <div class="w-20 h-20 md:w-28 md:h-28 rounded-full bg-white flex items-center justify-center border-4 border-gray-400 relative z-10 shadow-[0_0_30px_rgba(255,255,255,0.8)]">
+                                        <i class="fas fa-user-tie text-5xl md:text-6xl text-black drop-shadow-lg"></i>
+                                    </div>
                                 </div>
                                 <div class="text-left">
-                                    <span class="block text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-gold to-yellow-400 uppercase tracking-widest drop-shadow-lg leading-none mb-2">1-ON-1 PRIVATE</span>
-                                    <span class="block text-xs md:text-lg font-bold text-white uppercase tracking-[0.3em]">Individual Mentorship</span>
+                                    <div class="inline-block bg-white text-black text-[10px] md:text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-widest mb-3 shadow-[0_0_10px_rgba(255,255,255,0.5)]">
+                                        <i class="fas fa-star mr-1"></i> Premium Flagship Program
+                                    </div>
+                                    <span class="block text-4xl md:text-6xl font-black text-white uppercase tracking-widest leading-none mb-3 drop-shadow-[0_5px_5px_rgba(255,255,255,0.2)]">1-ON-1 PRIVATE</span>
+                                    <span class="block text-sm md:text-xl font-bold text-gray-300 uppercase tracking-[0.4em]">Individual Mentorship</span>
                                 </div>
                             </div>
                         </div>
@@ -239,15 +278,15 @@
                     <p class="text-xl md:text-2xl max-w-3xl mx-auto mb-4 font-light text-gray-300">
                         The Ultimate Institutional Trading Experience. <strong class="text-white">No crowded classes. Just you and the mentor.</strong>
                     </p>
-                    <p class="text-lg max-w-4xl mx-auto mb-10 text-gray-400">
+                    <p class="text-lg max-w-4xl mx-auto mb-10 text-gray-500">
                         Stop trading like a retail trader. Master Price Action, Advanced ICT (Inner Circle Trader) concepts, and Institutional Orderflow Data Analysis from the ground up to trade alongside the banks.
                     </p>
                     
                     <div class="flex flex-col sm:flex-row justify-center gap-6">
-                        <a href="#pricing-section" class="bg-brand-gold text-black px-8 py-4 rounded-lg font-bold text-lg hover:bg-yellow-500 transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] uppercase tracking-wide">
+                        <a href="#pricing-section" class="bg-white text-black px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-300 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] uppercase tracking-wide">
                             <i class="fas fa-lock-open mr-2"></i> Unlock Mentorship
                         </a>
-                        <a href="#history" onclick="switchTab('history')" class="glass-panel text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white/10 transition-all uppercase tracking-wide border border-white/10">
+                        <a href="#history" onclick="switchTab('history')" class="glass-panel text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white/20 transition-all uppercase tracking-wide border border-white/20">
                             Explore Knowledge
                         </a>
                     </div>
@@ -255,70 +294,73 @@
             </section>
 
             <section id="pricing-section" class="px-4 max-w-5xl mx-auto mb-24 relative" data-aos="zoom-in">
-                <div class="absolute -inset-1 bg-gradient-to-r from-brand-gold via-yellow-600 to-brand-gold rounded-2xl blur opacity-25"></div>
+                <div class="absolute -inset-1 bg-white rounded-2xl blur opacity-10"></div>
                 
-                <div class="glass-panel p-8 md:p-12 rounded-2xl relative overflow-hidden">
+                <div class="glass-panel p-8 md:p-12 rounded-2xl relative overflow-hidden border border-gray-700">
                     <!-- Premium Badge -->
-                    <div class="absolute top-0 right-0 bg-brand-gold text-black text-xs font-bold px-4 py-1 rounded-bl-lg uppercase tracking-widest">
+                    <div class="absolute top-0 right-0 bg-white text-black text-xs font-bold px-4 py-1 rounded-bl-lg uppercase tracking-widest">
                         VIP Access
                     </div>
                     
                     <div class="text-center mb-10">
-                        <h2 class="text-4xl font-extrabold uppercase tracking-wide mb-3 gold-text-gradient">The Trap Room Elite</h2>
-                        <p class="text-gray-300 text-lg">Strictly <span class="text-brand-gold font-bold">1-on-1 Individual Sessions</span>, complete curriculum, and lifetime community access.</p>
+                        <h2 class="text-4xl font-extrabold uppercase tracking-wide mb-3 white-text-gradient">The Trap Room Elite</h2>
+                        <div class="inline-block bg-white text-black px-4 py-1 rounded font-bold uppercase tracking-widest text-sm mb-4 animate-pulse">
+                            100% Individual Mentorship
+                        </div>
+                        <p class="text-gray-400 text-lg">Strictly <span class="text-white font-bold">1-on-1 Personal Sessions</span>, complete curriculum, and lifetime community access.</p>
                     </div>
                     
-                    <div class="flex flex-col md:flex-row justify-between items-center border-b border-white/10 pb-10 mb-10 gap-8">
+                    <div class="flex flex-col md:flex-row justify-between items-center border-b border-gray-800 pb-10 mb-10 gap-8">
                         <div class="text-center md:text-left">
                             <div class="flex items-end justify-center md:justify-start gap-2 mb-2">
                                 <span class="text-6xl font-extrabold text-white">25,000</span>
-                                <span class="text-2xl font-bold text-brand-gold mb-1">LKR</span>
+                                <span class="text-2xl font-bold text-gray-400 mb-1">LKR</span>
                             </div>
                             <p class="text-sm text-gray-500 uppercase tracking-widest">One-time payment. Lifetime Access.</p>
                         </div>
                         
                         <!-- WhatsApp Payment CTA -->
-                        <a href="https://wa.me/94700000000?text=I%20want%20to%20join%20The%20Trap%20Room%20Elite%20Mentorship%20for%2025000%20LKR" target="_blank" 
-                           class="w-full md:w-auto bg-[#25D366] hover:bg-[#1ebd5a] text-white px-8 py-4 rounded-xl text-lg font-bold uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(37,211,102,0.4)] flex items-center justify-center gap-3">
+                        <a href="https://wa.link/kk1pwc" target="_blank" 
+                           class="w-full md:w-auto bg-white hover:bg-gray-300 text-black px-8 py-4 rounded-xl text-lg font-bold uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center justify-center gap-3">
                             <i class="fab fa-whatsapp text-2xl"></i> Pay & Join Via WhatsApp
                         </a>
                     </div>
 
                     <div class="grid md:grid-cols-2 gap-x-12 gap-y-6">
                         <div class="flex items-start gap-4">
-                            <div class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center flex-shrink-0 mt-1">
+                            <div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center flex-shrink-0 mt-1">
                                 <i class="fas fa-check"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-lg mb-1">A-Z Technical Setup</h4>
-                                <p class="text-sm text-gray-400">Master Forex basics, Brokers, MT4/MT5, and TradingView configurations.</p>
+                                <h4 class="font-bold text-lg mb-1 text-white">A-Z Technical Setup</h4>
+                                <p class="text-sm text-gray-500">Master Forex basics, Brokers, MT4/MT5, and TradingView configurations.</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-4">
-                            <div class="w-8 h-8 rounded-full bg-brand-gold/20 text-brand-gold flex items-center justify-center flex-shrink-0 mt-1">
+                            <div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center flex-shrink-0 mt-1">
                                 <i class="fas fa-gem"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-lg mb-1">Complete ICT Mastery</h4>
-                                <p class="text-sm text-gray-400">Identify SMC, Liquidity Sweeps, FVG, Order Blocks, and Killzones accurately.</p>
+                                <h4 class="font-bold text-lg mb-1 text-white">Complete ICT Mastery</h4>
+                                <p class="text-sm text-gray-500">Identify SMC, Liquidity Sweeps, FVG, Order Blocks, and Killzones accurately.</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-4">
-                            <div class="w-8 h-8 rounded-full bg-brand-blue/20 text-brand-blue flex items-center justify-center flex-shrink-0 mt-1">
+                            <div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center flex-shrink-0 mt-1">
                                 <i class="fas fa-chart-bar"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-lg mb-1">Advanced Orderflow</h4>
-                                <p class="text-sm text-gray-400">Read Footprint Charts, Level 2 Data, and Delta Analysis to track institutional volume.</p>
+                                <h4 class="font-bold text-lg mb-1 text-white">Advanced Orderflow</h4>
+                                <p class="text-sm text-gray-500">Read Footprint Charts, Level 2 Data, and Delta Analysis to track institutional volume.</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-4">
-                            <div class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0 mt-1">
+                            <div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center flex-shrink-0 mt-1">
                                 <i class="fas fa-user-shield"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-lg mb-1">4 Secret Strategies & Prop Firms</h4>
-                                <p class="text-sm text-gray-400">Learn 4 private, high-probability strategies and how to consistently pass FTMO/FundedNext.</p>
+                                <h4 class="font-bold text-lg mb-1 text-white">4 Secret Strategies & Prop Firms</h4>
+                                <p class="text-sm text-gray-500">Learn 4 private, high-probability strategies and how to consistently pass FTMO/FundedNext.</p>
                             </div>
                         </div>
                     </div>
@@ -327,8 +369,8 @@
 
             <section class="px-4 max-w-7xl mx-auto" data-aos="fade-up">
                 <div class="text-center mb-16">
-                    <h2 class="text-4xl font-extrabold uppercase tracking-wide mb-3 gold-text-gradient">Comprehensive Curriculum Map</h2>
-                    <p class="text-gray-400 max-w-2xl mx-auto text-lg">From essential retail foundation to advanced institutional orderflow mastery. A complete transformation over two months.</p>
+                    <h2 class="text-4xl font-extrabold uppercase tracking-wide mb-3 white-text-gradient">Comprehensive Curriculum Map</h2>
+                    <p class="text-gray-500 max-w-2xl mx-auto text-lg">From essential retail foundation to advanced institutional orderflow mastery. A complete transformation over two months.</p>
                 </div>
                 
                 <div class="grid lg:grid-cols-2 gap-10">
@@ -336,118 +378,118 @@
                     <!-- ================= MONTH 1 ================= -->
                     <div class="space-y-6">
                         <!-- Month 1 Header -->
-                        <div class="inline-flex items-center gap-3 px-6 py-4 bg-brand-gold/10 border border-brand-gold/30 rounded-xl w-full shadow-[0_0_15px_rgba(212,175,55,0.15)]">
-                            <div class="w-10 h-10 rounded-full bg-brand-gold/20 flex items-center justify-center text-brand-gold shrink-0">
+                        <div class="inline-flex items-center gap-3 px-6 py-4 bg-white/10 border border-white/20 rounded-xl w-full">
+                            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-black shrink-0">
                                 <i class="fas fa-chess-knight text-xl"></i>
                             </div>
                             <h3 class="text-2xl font-bold text-white uppercase tracking-wider">Month 1: Foundation & ICT</h3>
                         </div>
 
                         <!-- Week 1 -->
-                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-gold transition-colors duration-300 group">
-                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 1: Introduction to Trading & Core Basics</h4>
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-600 hover:border-white transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-gray-700 pb-2">Week 1: Introduction to Trading & Core Basics</h4>
                             
                             <div class="space-y-5">
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 1</span>
-                                    <span class="text-gray-200 font-semibold ml-2">Forex Basics A to Z (Part 1)</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 1</span>
+                                    <span class="text-gray-300 font-semibold ml-2">Forex Basics A to Z (Part 1)</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> What is Forex? Market participants (Retail vs. Institutions)</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Pips, Lot sizes, Leverage & Margin</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Brokers, Spreads</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Introduction to MT4/MT5 & TradingView (Platform tour)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> What is Forex? Market participants (Retail vs. Institutions)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Pips, Lot sizes, Leverage & Margin</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Brokers, Spreads</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Introduction to MT4/MT5 & TradingView (Platform tour)</li>
                                     </ul>
                                 </div>
                                 
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 2</span>
-                                    <span class="text-gray-200 font-semibold ml-2">Forex Basics A to Z (Part 2) & Price Action</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 2</span>
+                                    <span class="text-gray-300 font-semibold ml-2">Forex Basics A to Z (Part 2) & Price Action</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Types of Market Trends (Uptrend, Downtrend, Consolidation)</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Basic Market Structure (HH, HL, LH, LL)</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Support & Resistance, Trendlines</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Important Candlestick Anatomy & Basic Patterns</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Types of Market Trends (Uptrend, Downtrend, Consolidation)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Basic Market Structure (HH, HL, LH, LL)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Support & Resistance, Trendlines</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Important Candlestick Anatomy & Basic Patterns</li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Week 2 -->
-                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-gold transition-colors duration-300 group">
-                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 2: Advanced Basics & Intro to ICT</h4>
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-600 hover:border-white transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-gray-700 pb-2">Week 2: Advanced Basics & Intro to ICT</h4>
                             
                             <div class="space-y-5">
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 3</span>
-                                    <span class="text-gray-200 font-semibold ml-2">Risk Management & Trading Psychology</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 3</span>
+                                    <span class="text-gray-300 font-semibold ml-2">Risk Management & Trading Psychology</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Risk to Reward Ratio (RRR) & Position Sizing</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Proper Stop Loss (SL) & Take Profit (TP) placement</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Emotions in trading (FOMO, Greed, Fear) & Building a trading plan</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Risk to Reward Ratio (RRR) & Position Sizing</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Proper Stop Loss (SL) & Take Profit (TP) placement</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Emotions in trading (FOMO, Greed, Fear) & Building a trading plan</li>
                                     </ul>
                                 </div>
                                 
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 4</span>
-                                    <span class="text-gray-200 font-semibold ml-2">ICT Basics - Liquidity & Time</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 4</span>
+                                    <span class="text-gray-300 font-semibold ml-2">ICT Basics - Liquidity & Time</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Introduction to Smart Money Concepts (SMC) & ICT</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> What is Liquidity? (Buy Side Liquidity - BSL / Sell Side Liquidity - SSL)</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Trading Sessions, Killzones & True Day Open</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Asian Range, London Sweep, New York Continuation</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Introduction to Smart Money Concepts (SMC) & ICT</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> What is Liquidity? (Buy Side Liquidity - BSL / Sell Side Liquidity - SSL)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Trading Sessions, Killzones & True Day Open</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Asian Range, London Sweep, New York Continuation</li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Week 3 -->
-                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-gold transition-colors duration-300 group">
-                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 3: ICT Core Mechanics</h4>
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-600 hover:border-white transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-gray-700 pb-2">Week 3: ICT Core Mechanics</h4>
                             
                             <div class="space-y-5">
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 5</span>
-                                    <span class="text-gray-200 font-semibold ml-2">ICT Market Structure</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 5</span>
+                                    <span class="text-gray-300 font-semibold ml-2">ICT Market Structure</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Market Structure Shift (MSS) vs. Break of Structure (BOS)</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Displacement, Market gaps, and Price delivery</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Fair Value Gaps (FVG) / Imbalances - How to identify and trade them</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Market Structure Shift (MSS) vs. Break of Structure (BOS)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Displacement, Market gaps, and Price delivery</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Fair Value Gaps (FVG) / Imbalances - How to identify and trade them</li>
                                     </ul>
                                 </div>
                                 
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 6</span>
-                                    <span class="text-gray-200 font-semibold ml-2">ICT Order Blocks & Institutional Levels</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 6</span>
+                                    <span class="text-gray-300 font-semibold ml-2">ICT Order Blocks & Institutional Levels</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> What is an Order Block (OB)? How to find high-probability OBs.</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Breaker Blocks & Mitigation Blocks</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Premium & Discount Zones (Fibonacci application)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> What is an Order Block (OB)? How to find high-probability OBs.</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Breaker Blocks & Mitigation Blocks</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Premium & Discount Zones (Fibonacci application)</li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Week 4 -->
-                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-gold transition-colors duration-300 group">
-                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 4: Advanced ICT Concepts</h4>
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-600 hover:border-white transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-gray-700 pb-2">Week 4: Advanced ICT Concepts</h4>
                             
                             <div class="space-y-5">
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 7</span>
-                                    <span class="text-gray-200 font-semibold ml-2">ICT Advanced - AMD & Liquidity Runs</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 7</span>
+                                    <span class="text-gray-300 font-semibold ml-2">ICT Advanced - AMD & Liquidity Runs</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> The Power of 3 (PO3) / AMD Cycle: Accumulation, Manipulation, Distribution</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Inducement & Engineered Liquidity</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Sweep of liquidity setups (Turtle Soup)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> The Power of 3 (PO3) / AMD Cycle: Accumulation, Manipulation, Distribution</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Inducement & Engineered Liquidity</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Sweep of liquidity setups (Turtle Soup)</li>
                                     </ul>
                                 </div>
                                 
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 8</span>
-                                    <span class="text-gray-200 font-semibold ml-2">Top-Down Analysis (ICT Application)</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 8</span>
+                                    <span class="text-gray-300 font-semibold ml-2">Top-Down Analysis (ICT Application)</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Multi-timeframe analysis (HTF bias to LTF entry)</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Putting ICT concepts together (Liquidity + MSS + FVG/OB = Trade Setup)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Multi-timeframe analysis (HTF bias to LTF entry)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Putting ICT concepts together (Liquidity + MSS + FVG/OB = Trade Setup)</li>
                                     </ul>
                                 </div>
                             </div>
@@ -457,102 +499,102 @@
                     <!-- ================= MONTH 2 ================= -->
                     <div class="space-y-6">
                         <!-- Month 2 Header -->
-                        <div class="inline-flex items-center gap-3 px-6 py-4 bg-brand-blue/10 border border-brand-blue/30 rounded-xl w-full shadow-[0_0_15px_rgba(14,165,233,0.15)]">
-                            <div class="w-10 h-10 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue shrink-0">
+                        <div class="inline-flex items-center gap-3 px-6 py-4 bg-white/10 border border-white/20 rounded-xl w-full">
+                            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-black shrink-0">
                                 <i class="fas fa-layer-group text-xl"></i>
                             </div>
                             <h3 class="text-2xl font-bold text-white uppercase tracking-wider">Month 2: Orderflow Mastery & Strategies</h3>
                         </div>
 
                         <!-- Week 5 -->
-                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-blue transition-colors duration-300 group">
-                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 5: Introduction to Orderflow</h4>
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-600 hover:border-white transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-gray-700 pb-2">Week 5: Introduction to Orderflow</h4>
                             
                             <div class="space-y-5">
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-blue text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 9</span>
-                                    <span class="text-gray-200 font-semibold ml-2">Orderflow Basics</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 9</span>
+                                    <span class="text-gray-300 font-semibold ml-2">Orderflow Basics</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> What is Orderflow? Candlestick vs. Orderflow footprint</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Understanding Level 2 Data & DOM (Depth of Market)</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Volume ticks basic</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Setting up Orderflow charts / Indicators</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> What is Orderflow? Candlestick vs. Orderflow footprint</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Understanding Level 2 Data & DOM (Depth of Market)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Volume ticks basic</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Setting up Orderflow charts / Indicators</li>
                                     </ul>
                                 </div>
                                 
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-blue text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 10</span>
-                                    <span class="text-gray-200 font-semibold ml-2">Reading the Footprint & Delta</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 10</span>
+                                    <span class="text-gray-300 font-semibold ml-2">Reading the Footprint & Delta</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> How to read a Footprint Chart</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Understanding Delta (Positive vs. Negative Delta, Cumulative Delta), cvd divergace</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Point of Control (POC) & Value Area (VA) basics</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> How to read a Footprint Chart</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Understanding Delta (Positive vs. Negative Delta, Cumulative Delta), cvd divergace</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Point of Control (POC) & Value Area (VA) basics</li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Week 6 -->
-                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-blue transition-colors duration-300 group">
-                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 6: Advanced Orderflow & Confluence</h4>
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-600 hover:border-white transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-gray-700 pb-2">Week 6: Advanced Orderflow & Confluence</h4>
                             
                             <div class="space-y-5">
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-blue text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 11</span>
-                                    <span class="text-gray-200 font-semibold ml-2">Advanced Orderflow Concepts</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 11</span>
+                                    <span class="text-gray-300 font-semibold ml-2">Advanced Orderflow Concepts</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Imbalances (Buying/Selling Imbalances)</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Absorption & Exhaustion (Identifying trapped traders)</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> vwap</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Imbalances (Buying/Selling Imbalances)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Absorption & Exhaustion (Identifying trapped traders)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> vwap</li>
                                     </ul>
                                 </div>
                                 
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-blue text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 12</span>
-                                    <span class="text-gray-200 font-semibold ml-2">The Master Confluence (ICT + Orderflow)</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 12</span>
+                                    <span class="text-gray-300 font-semibold ml-2">The Master Confluence (ICT + Orderflow)</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Using Orderflow to confirm ICT setups (E.g., Seeing absorption at an ICT Order Block)</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Confirming a Fair Value Gap (FVG) with Footprint data</li>
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> High-probability entry triggers</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Using Orderflow to confirm ICT setups (E.g., Seeing absorption at an ICT Order Block)</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Confirming a Fair Value Gap (FVG) with Footprint data</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> High-probability entry triggers</li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Week 7 & 8 -->
-                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-neon transition-colors duration-300 group">
-                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 7 & 8: The 4 Secret Strategies</h4>
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-600 hover:border-white transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-gray-700 pb-2">Week 7 & 8: The 4 Secret Strategies</h4>
                             
                             <div class="space-y-5">
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-neon text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 13</span>
-                                    <span class="text-gray-200 font-semibold ml-2">Strategy 1</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 13</span>
+                                    <span class="text-gray-300 font-semibold ml-2">Strategy 1</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-neon/50 mr-2 mt-1 text-[10px]"></i> High-probability setup execution rules & mechanics</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> High-probability setup execution rules & mechanics</li>
                                     </ul>
                                 </div>
                                 
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-neon text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 14</span>
-                                    <span class="text-gray-200 font-semibold ml-2">Strategy 2</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 14</span>
+                                    <span class="text-gray-300 font-semibold ml-2">Strategy 2</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-neon/50 mr-2 mt-1 text-[10px]"></i> Advanced institutional trap setups & liquidity sweeps</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Advanced institutional trap setups & liquidity sweeps</li>
                                     </ul>
                                 </div>
 
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-neon text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 15</span>
-                                    <span class="text-gray-200 font-semibold ml-2">Strategy 3</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 15</span>
+                                    <span class="text-gray-300 font-semibold ml-2">Strategy 3</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-neon/50 mr-2 mt-1 text-[10px]"></i> Orderflow and footprint confirmed entries</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> Orderflow and footprint confirmed entries</li>
                                     </ul>
                                 </div>
 
                                 <div>
-                                    <span class="inline-block bg-gray-800 text-brand-neon text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 16</span>
-                                    <span class="text-gray-200 font-semibold ml-2">Strategy 4</span>
+                                    <span class="inline-block bg-white text-black text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 16</span>
+                                    <span class="text-gray-300 font-semibold ml-2">Strategy 4</span>
                                     <ul class="mt-2 space-y-1">
-                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-neon/50 mr-2 mt-1 text-[10px]"></i> The ultimate confluence strategy & prop firm execution</li>
+                                        <li class="text-sm text-gray-500 flex items-start"><i class="fas fa-angle-right text-gray-400 mr-2 mt-1 text-[10px]"></i> The ultimate confluence strategy & prop firm execution</li>
                                     </ul>
                                 </div>
                             </div>
@@ -566,24 +608,24 @@
         <!-- ================= TAB 2: TOOLS (SESSIONS & CALCULATOR) ================= -->
         <div id="tools" class="tab-content pt-10 pb-20 px-4 max-w-7xl mx-auto">
             <div class="text-center mb-12" data-aos="fade-down">
-                <h2 class="text-4xl font-extrabold uppercase tracking-wide mb-3 gold-text-gradient">Advanced Trading Tools</h2>
-                <p class="text-gray-400 max-w-2xl mx-auto">Custom-built Market Sessions Visualizer and Lot Size Calculator to streamline your trading execution.</p>
+                <h2 class="text-4xl font-extrabold uppercase tracking-wide mb-3 white-text-gradient">Advanced Trading Tools</h2>
+                <p class="text-gray-500 max-w-2xl mx-auto">Custom-built Market Sessions Visualizer and Lot Size Calculator to streamline your trading execution.</p>
             </div>
 
             <!-- Market Sessions Visualizer (BabyPips Style) -->
-            <div class="glass-panel p-6 md:p-10 rounded-2xl mb-12" data-aos="fade-up">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-white/10 pb-6">
+            <div class="glass-panel p-6 md:p-10 rounded-2xl mb-12 border border-gray-700" data-aos="fade-up">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-gray-800 pb-6">
                     <div>
-                        <h3 class="text-2xl font-bold uppercase flex items-center gap-3">
-                            <i class="far fa-clock text-brand-blue"></i> Market Sessions Visualizer
+                        <h3 class="text-2xl font-bold uppercase flex items-center gap-3 text-white">
+                            <i class="far fa-clock"></i> Market Sessions Visualizer
                         </h3>
-                        <p class="text-sm text-gray-400 mt-1">Live market open hours and overlaps adjusted dynamically to your local timezone.</p>
+                        <p class="text-sm text-gray-500 mt-1">Live market open hours and overlaps adjusted dynamically to your local timezone.</p>
                     </div>
                     
                     <!-- Timezone Selector -->
                     <div class="w-full md:w-64">
-                        <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Select Your Timezone</label>
-                        <select id="timezone-select" onchange="renderSessions()" class="w-full bg-brand-panel border border-gray-700 text-white p-3 rounded-lg outline-none focus:border-brand-gold appearance-none font-bold">
+                        <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2">Select Your Timezone</label>
+                        <select id="timezone-select" onchange="renderSessions()" class="w-full bg-black border border-gray-600 text-white p-3 rounded-lg outline-none focus:border-white appearance-none font-bold">
                             <!-- Populated by JS -->
                         </select>
                     </div>
@@ -598,7 +640,7 @@
                         </div>
 
                         <!-- Session Container -->
-                        <div class="relative w-full bg-gray-900/50 border border-gray-800 rounded-lg p-2 pt-8" id="session-bars-container">
+                        <div class="relative w-full bg-black border border-gray-800 rounded-lg p-2 pt-8" id="session-bars-container">
                             <!-- Current Time Indicator -->
                             <div id="current-time-line">
                                 <div class="current-time-label" id="current-time-label">00:00</div>
@@ -618,18 +660,18 @@
             </div>
 
             <!-- Universal Lot & Risk Calculator -->
-            <div class="glass-panel p-6 md:p-10 rounded-2xl max-w-4xl mx-auto" data-aos="fade-up">
-                <h3 class="text-2xl font-bold uppercase mb-2 border-b border-white/10 pb-4 flex items-center gap-3">
-                    <i class="fas fa-calculator text-brand-gold"></i> Universal Position Size Calculator
+            <div class="glass-panel p-6 md:p-10 rounded-2xl max-w-4xl mx-auto border border-gray-700" data-aos="fade-up">
+                <h3 class="text-2xl font-bold uppercase mb-2 border-b border-gray-800 pb-4 flex items-center gap-3 text-white">
+                    <i class="fas fa-calculator"></i> Universal Position Size Calculator
                 </h3>
-                <p class="text-sm text-gray-400 mb-8">Calculate precise position sizing for Forex, Indices, and Commodities to ensure strict risk management.</p>
+                <p class="text-sm text-gray-500 mb-8">Calculate precise position sizing for Forex, Indices, and Commodities to ensure strict risk management.</p>
                 
                 <div class="grid md:grid-cols-2 gap-8">
                     <!-- Inputs -->
                     <div class="space-y-5">
                         <div>
-                            <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Account Currency</label>
-                            <select id="calc-currency" class="w-full bg-brand-panel border border-gray-700 text-white p-3 rounded-lg outline-none focus:border-brand-gold transition-colors">
+                            <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2">Account Currency</label>
+                            <select id="calc-currency" class="w-full bg-black border border-gray-600 text-white p-3 rounded-lg outline-none focus:border-white transition-colors">
                                 <option value="USD">USD ($)</option>
                                 <option value="EUR">EUR (€)</option>
                                 <option value="GBP">GBP (£)</option>
@@ -637,31 +679,31 @@
                         </div>
                         
                         <div>
-                            <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Account Balance</label>
+                            <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2">Account Balance</label>
                             <div class="relative">
                                 <span class="absolute left-3 top-3 text-gray-500 font-bold">$</span>
-                                <input type="number" id="calc-balance" class="w-full bg-brand-panel border border-gray-700 text-white p-3 pl-8 rounded-lg outline-none focus:border-brand-gold transition-colors font-mono" placeholder="10000" value="10000">
+                                <input type="number" id="calc-balance" class="w-full bg-black border border-gray-600 text-white p-3 pl-8 rounded-lg outline-none focus:border-white transition-colors font-mono" placeholder="10000" value="10000">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Risk (%)</label>
+                                <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2">Risk (%)</label>
                                 <div class="relative">
-                                    <input type="number" id="calc-risk" class="w-full bg-brand-panel border border-gray-700 text-white p-3 rounded-lg outline-none focus:border-brand-gold transition-colors font-mono" placeholder="1.0" value="1.0" step="0.1">
+                                    <input type="number" id="calc-risk" class="w-full bg-black border border-gray-600 text-white p-3 rounded-lg outline-none focus:border-white transition-colors font-mono" placeholder="1.0" value="1.0" step="0.1">
                                     <span class="absolute right-3 top-3 text-gray-500 font-bold">%</span>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Stop Loss (Pips/Pts)</label>
-                                <input type="number" id="calc-sl" class="w-full bg-brand-panel border border-gray-700 text-white p-3 rounded-lg outline-none focus:border-brand-gold transition-colors font-mono" placeholder="15" value="15">
+                                <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2">Stop Loss (Pips/Pts)</label>
+                                <input type="number" id="calc-sl" class="w-full bg-black border border-gray-600 text-white p-3 rounded-lg outline-none focus:border-white transition-colors font-mono" placeholder="15" value="15">
                             </div>
                         </div>
 
                         <!-- Advanced Asset Selection -->
-                        <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-800">
-                            <label class="block text-xs uppercase tracking-widest text-brand-blue mb-2">Asset Class / Pair Configuration</label>
-                            <select id="calc-asset" onchange="updateAssetConfig()" class="w-full bg-brand-panel border border-gray-700 text-white p-3 rounded-lg outline-none focus:border-brand-blue transition-colors mb-3">
+                        <div class="bg-black p-4 rounded-lg border border-gray-800">
+                            <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Asset Class / Pair Configuration</label>
+                            <select id="calc-asset" onchange="updateAssetConfig()" class="w-full bg-black border border-gray-600 text-white p-3 rounded-lg outline-none focus:border-white transition-colors mb-3">
                                 <option value="10" data-type="forex-major">Major Forex (XXX/USD) - $10/pip</option>
                                 <option value="7.5" data-type="forex-cross">Cross Pairs (e.g., EUR/GBP) ~ $7.5/pip</option>
                                 <option value="100" data-type="indices">Indices (US30, NAS100) - $100/point (varies)</option>
@@ -671,19 +713,19 @@
                             
                             <div id="custom-pip-div" class="hidden">
                                 <label class="block text-[10px] uppercase text-gray-500 mb-1">Custom Value per 1 Standard Lot</label>
-                                <input type="number" id="calc-pipvalue" value="10" class="w-full bg-brand-panel border border-gray-700 text-white p-2 rounded outline-none focus:border-brand-gold font-mono text-sm">
+                                <input type="number" id="calc-pipvalue" value="10" class="w-full bg-black border border-gray-600 text-white p-2 rounded outline-none focus:border-white font-mono text-sm">
                             </div>
                         </div>
                     </div>
 
                     <!-- Results Output -->
                     <div class="flex flex-col justify-center">
-                        <button onclick="calculateLotSize()" class="w-full bg-brand-gold text-black hover:bg-yellow-500 font-bold py-4 rounded-xl uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(212,175,55,0.2)] mb-8">
+                        <button onclick="calculateLotSize()" class="w-full bg-white text-black hover:bg-gray-300 font-bold py-4 rounded-xl uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(255,255,255,0.2)] mb-8">
                             Calculate Position
                         </button>
 
-                        <div class="bg-[#0B0F19] border border-gray-800 rounded-xl p-6 text-center shadow-inner relative overflow-hidden">
-                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-blue to-brand-gold"></div>
+                        <div class="bg-black border border-gray-800 rounded-xl p-6 text-center shadow-inner relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-white"></div>
                             
                             <h4 class="text-xs uppercase tracking-widest text-gray-500 mb-2">Recommended Lot Size</h4>
                             <div class="text-6xl font-extrabold text-white mb-6 tracking-tighter" id="result-lot">0.00</div>
@@ -691,11 +733,11 @@
                             <div class="grid grid-cols-2 gap-4 border-t border-gray-800 pt-4">
                                 <div>
                                     <div class="text-[10px] uppercase text-gray-500 mb-1">Value at Risk</div>
-                                    <div class="text-xl font-bold text-red-400" id="result-money">$0.00</div>
+                                    <div class="text-xl font-bold text-white" id="result-money">$0.00</div>
                                 </div>
                                 <div>
                                     <div class="text-[10px] uppercase text-gray-500 mb-1">Units (Volume)</div>
-                                    <div class="text-xl font-bold text-gray-300 font-mono" id="result-units">0</div>
+                                    <div class="text-xl font-bold text-gray-400 font-mono" id="result-units">0</div>
                                 </div>
                             </div>
                         </div>
@@ -707,8 +749,8 @@
         <!-- ================= TAB 3: TRADINGVIEW CHART ================= -->
         <div id="chart" class="tab-content pt-10 pb-20 px-4 max-w-7xl mx-auto h-[85vh]">
             <div class="flex justify-between items-end mb-4" data-aos="fade-down">
-                <h2 class="text-3xl font-extrabold uppercase tracking-wide gold-text-gradient">Live Market Terminal</h2>
-                <div class="text-xs text-gray-500 uppercase tracking-widest"><span class="w-2 h-2 inline-block bg-green-500 rounded-full animate-pulse mr-1"></span> Live Data feed</div>
+                <h2 class="text-3xl font-extrabold uppercase tracking-wide white-text-gradient">Live Market Terminal</h2>
+                <div class="text-xs text-gray-500 uppercase tracking-widest"><span class="w-2 h-2 inline-block bg-white rounded-full animate-pulse mr-1"></span> Live Data feed</div>
             </div>
             <div class="w-full h-full glass-panel rounded-xl overflow-hidden border border-gray-800" id="tv-container">
                 <!-- TradingView Widget injected via JS -->
@@ -718,8 +760,8 @@
         <!-- ================= TAB 4: HISTORY & KNOWLEDGE ================= -->
         <div id="history" class="tab-content pt-10 pb-20 px-4 max-w-7xl mx-auto">
             <div class="text-center mb-16" data-aos="fade-down">
-                <h2 class="text-5xl font-extrabold uppercase tracking-wide mb-4 gold-text-gradient">The Knowledge Archive</h2>
-                <p class="text-gray-400 max-w-3xl mx-auto text-lg">From the origins of the Forex market to modern Interbank Price Delivery Algorithms (IPDA) and Orderflow.</p>
+                <h2 class="text-5xl font-extrabold uppercase tracking-wide mb-4 white-text-gradient">The Knowledge Archive</h2>
+                <p class="text-gray-500 max-w-3xl mx-auto text-lg">From the origins of the Forex market to modern Interbank Price Delivery Algorithms (IPDA) and Orderflow.</p>
             </div>
             
             <div class="space-y-32">
@@ -727,16 +769,16 @@
                 <!-- Forex History Deep Dive -->
                 <div class="flex flex-col lg:flex-row gap-10 items-start" data-aos="fade-up">
                     <div class="w-full lg:w-5/12 sticky top-24">
-                        <div class="rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.15)] border border-gray-800 relative group">
+                        <div class="rounded-2xl overflow-hidden border border-gray-700 relative group">
                             <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-all z-10 duration-500"></div>
-                            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=1000" alt="Wall Street History" class="w-full h-[600px] object-cover transform group-hover:scale-105 transition-transform duration-700">
+                            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=1000" alt="Wall Street History" class="w-full h-[600px] object-cover transform group-hover:scale-105 transition-transform duration-700 filter grayscale">
                         </div>
                     </div>
                     <div class="w-full lg:w-7/12">
-                        <div class="inline-block px-3 py-1 border border-brand-gold text-brand-gold text-xs font-bold uppercase tracking-widest rounded-full mb-4">Origins & Evolution</div>
-                        <h3 class="text-4xl font-extrabold mb-6">History of Global FX <br><span class="text-2xl text-gray-500">(The Macro Foundation)</span></h3>
+                        <div class="inline-block px-3 py-1 border border-white text-white text-xs font-bold uppercase tracking-widest rounded-full mb-4">Origins & Evolution</div>
+                        <h3 class="text-4xl font-extrabold mb-6 text-white">History of Global FX <br><span class="text-2xl text-gray-500">(The Macro Foundation)</span></h3>
                         
-                        <div class="space-y-6 text-gray-300 text-justify leading-relaxed font-light">
+                        <div class="space-y-6 text-gray-400 text-justify leading-relaxed font-light">
                             <p>The Foreign Exchange (Forex) market is the undisputed titan of global finance, operating as an intricate, decentralized, over-the-counter (OTC) ecosystem where currencies are exchanged to determine global macroeconomic valuations. Processing a staggering daily trading volume exceeding $7.5 trillion, it dwarfs all equity, options, and futures markets combined. To truly master the modern algorithmic environment, an elite trader must fundamentally understand the historical evolution and the underlying macroeconomic forces that birthed the liquidity structures we navigate today.</p>
                             
                             <p>The earliest origins of currency exchange trace back millennia, long before the advent of digitized charts and high-frequency algorithms. From the primitive barter systems of ancient Mesopotamia to the first minted electrum coins of Lydia in the 6th century BCE, human civilization has inherently sought a standardized medium of exchange. During the Renaissance, the powerful Medici family in Florence revolutionized international trade by pioneering the banking system and issuing 'bills of exchange.' This innovation acted as the primitive precursor to modern currency trading, allowing global merchants to bypass the logistical nightmare and physical danger of transporting heavy gold across treacherous trade routes.</p>
@@ -763,16 +805,16 @@
                 <!-- ICT / M.J Huddleston -->
                 <div class="flex flex-col lg:flex-row-reverse gap-10 items-start" data-aos="fade-up">
                     <div class="w-full lg:w-5/12 sticky top-24">
-                        <div class="rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(14,165,233,0.15)] border border-gray-800 relative group">
-                            <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay group-hover:bg-transparent transition-all z-10 duration-500"></div>
-                            <img src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&q=80&w=1000" alt="Chess Strategy representing ICT" class="w-full h-[600px] object-cover transform group-hover:scale-105 transition-transform duration-700">
+                        <div class="rounded-2xl overflow-hidden border border-gray-700 relative group">
+                            <div class="absolute inset-0 bg-black/40 mix-blend-overlay group-hover:bg-transparent transition-all z-10 duration-500"></div>
+                            <img src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&q=80&w=1000" alt="Chess Strategy representing ICT" class="w-full h-[600px] object-cover transform group-hover:scale-105 transition-transform duration-700 filter grayscale">
                         </div>
                     </div>
                     <div class="w-full lg:w-7/12">
-                        <div class="inline-block px-3 py-1 border border-brand-blue text-brand-blue text-xs font-bold uppercase tracking-widest rounded-full mb-4">The Architect of SMC</div>
-                        <h3 class="text-4xl font-extrabold mb-6">M.J. Huddleston & ICT <br><span class="text-2xl text-gray-500">(The Inner Circle Trader)</span></h3>
+                        <div class="inline-block px-3 py-1 border border-white text-white text-xs font-bold uppercase tracking-widest rounded-full mb-4">The Architect of SMC</div>
+                        <h3 class="text-4xl font-extrabold mb-6 text-white">M.J. Huddleston & ICT <br><span class="text-2xl text-gray-500">(The Inner Circle Trader)</span></h3>
                         
-                        <div class="space-y-6 text-gray-300 text-justify leading-relaxed font-light">
+                        <div class="space-y-6 text-gray-400 text-justify leading-relaxed font-light">
                             <p>The global landscape of retail trading education was violently disrupted and forever altered by the emergence of Michael J. Huddleston, universally known as The Inner Circle Trader (ICT). For decades, retail education was entirely dominated by the exact same regurgitated, failing concepts: retail support and resistance, moving average crossovers, RSI divergences, and geometric chart patterns (flags, pennants, and wedges). Huddleston recognized early in his career that these concepts were not just statistically flawed; they were intentionally popularized by market makers to engineer massive pools of liquidity for institutional algorithms to systematically prey upon.</p>
                             
                             <p>Huddleston's unparalleled journey spanned over 30 years of obsessive tape reading, forensic chart analysis, and reverse-engineering the absolute highest levels of market movements. He hypothesized—and subsequently proved to millions of students worldwide—that the global financial markets are entirely devoid of organic buying and selling pressure. Instead, they are completely controlled, manipulated, and scheduled by a highly sophisticated, central bank-sponsored entity known as the Interbank Price Delivery Algorithm (IPDA).</p>
@@ -799,16 +841,16 @@
                 <!-- Orderflow Deep Dive -->
                 <div class="flex flex-col lg:flex-row gap-10 items-start" data-aos="fade-up">
                     <div class="w-full lg:w-5/12 sticky top-24">
-                        <div class="rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(57,255,20,0.15)] border border-gray-800 relative group">
-                            <div class="absolute inset-0 bg-green-500/20 mix-blend-overlay group-hover:bg-transparent transition-all z-10 duration-500"></div>
-                            <img src="https://images.unsplash.com/photo-1642790106117-e829e14a795f?auto=format&fit=crop&q=80&w=1000" alt="Orderflow Charts" class="w-full h-[600px] object-cover transform group-hover:scale-105 transition-transform duration-700 filter grayscale group-hover:grayscale-0">
+                        <div class="rounded-2xl overflow-hidden border border-gray-700 relative group">
+                            <div class="absolute inset-0 bg-black/40 mix-blend-overlay group-hover:bg-transparent transition-all z-10 duration-500"></div>
+                            <img src="https://images.unsplash.com/photo-1642790106117-e829e14a795f?auto=format&fit=crop&q=80&w=1000" alt="Orderflow Charts" class="w-full h-[600px] object-cover transform group-hover:scale-105 transition-transform duration-700 filter grayscale">
                         </div>
                     </div>
                     <div class="w-full lg:w-7/12">
-                        <div class="inline-block px-3 py-1 border border-green-500 text-green-500 text-xs font-bold uppercase tracking-widest rounded-full mb-4">Volume & Microstructure</div>
-                        <h3 class="text-4xl font-extrabold mb-6">Orderflow Data Analysis <br><span class="text-2xl text-gray-500">(The X-Ray of the Market)</span></h3>
+                        <div class="inline-block px-3 py-1 border border-white text-white text-xs font-bold uppercase tracking-widest rounded-full mb-4">Volume & Microstructure</div>
+                        <h3 class="text-4xl font-extrabold mb-6 text-white">Orderflow Data Analysis <br><span class="text-2xl text-gray-500">(The X-Ray of the Market)</span></h3>
                         
-                        <div class="space-y-6 text-gray-300 text-justify leading-relaxed font-light">
+                        <div class="space-y-6 text-gray-400 text-justify leading-relaxed font-light">
                             <p>While strict Price Action and ICT concepts provide the overarching macroscopic map of where price is highly likely to be drawn, advanced Orderflow Analysis provides the real-time, microscopic, undeniable truth of what is actually happening at that exact moment in the live market. Standard Japanese candlestick charts are fundamentally, mathematically limited; they only display the Open, High, Low, and Close (OHLC). They show you the aftermath and the result of a battle, but they completely blind you to the underlying mechanics of the battle itself. Orderflow is the X-ray vision of institutional trading, violently pulling back the curtain on hidden institutional volume.</p>
                             
                             <p>To truly comprehend Orderflow, one must fundamentally understand Market Microstructure and the mechanics of the continuous dual-auction process. Every single transaction executed in the financial market requires exactly two participating parties: a willing buyer and a willing seller. More specifically, it requires aggressive market orders violently interacting with passive limit orders resting quietly in the Central Limit Order Book (CLOB). When a retail trader aggressively hits "Buy Market," their order is instantly matched against the lowest currently available "Sell Limit" (known as the Ask). This constant interaction of aggressive market participants consuming passive limit liquidity is the only thing that actually causes price ticks to physically move up or down on a chart.</p>
@@ -838,18 +880,12 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-gray-800 bg-[#0B0F19] py-12 mt-auto">
+    <footer class="border-t border-gray-800 bg-[#000000] py-12 mt-auto">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <div class="w-16 h-16 mx-auto rounded-lg bg-gradient-to-br from-brand-gold to-yellow-800 flex items-center justify-center font-bold text-2xl text-white mb-6">
-                TR
-            </div>
+            <img src="https://github.com/ayodayanilukshana-alt/crypto-bot/blob/6058312e26405cb6fa2eed96b625d689b14eb21c/Edgy%20Urban%20Logo%20for%20The%20Trap%20Room%20(1).png?raw=true" alt="The Trap Room Logo" class="h-20 mx-auto mb-6 object-contain filter grayscale bg-white p-2 rounded-lg">
             <h2 class="text-2xl font-extrabold tracking-widest uppercase mb-6 text-white">The Trap Room</h2>
-            <div class="flex justify-center gap-8 mb-8">
-                <a href="#" class="text-3xl text-gray-500 hover:text-brand-blue transition-colors"><i class="fab fa-telegram"></i></a>
-                <a href="#" class="text-3xl text-gray-500 hover:text-red-500 transition-colors"><i class="fab fa-youtube"></i></a>
-                <a href="#" class="text-3xl text-gray-500 hover:text-pink-500 transition-colors"><i class="fab fa-instagram"></i></a>
-            </div>
-            <p class="text-xs font-bold uppercase tracking-widest text-gray-600 mb-2">Trading involves significant risk. Not financial advice.</p>
+            
+            <p class="text-xs font-bold uppercase tracking-widest text-gray-600 mb-2 mt-8">Trading involves significant risk. Not financial advice.</p>
             <p class="text-xs text-gray-700">&copy; 2026 The Trap Room Elite Trading Academy. All rights reserved.</p>
         </div>
     </footer>
@@ -905,7 +941,7 @@
                     "style": "1",
                     "locale": "en",
                     "enable_publishing": false,
-                    "backgroundColor": "#0B0F19",
+                    "backgroundColor": "#000000",
                     "gridColor": "#1f2937",
                     "hide_top_toolbar": false,
                     "save_image": false,
@@ -959,13 +995,13 @@
         // Initialize Calculator
         updateAssetConfig();
 
-        // --- Advanced Market Sessions (BabyPips Style Timeline) ---
+        // --- Advanced Market Sessions (BabyPips Style Timeline - Monochrome) ---
         // Session UTC Hours (Approximate)
         const sessionsData = [
-            { id: 'sydney', name: 'Sydney', color: '#8b5cf6', startUTC: 22, endUTC: 7 },
-            { id: 'tokyo', name: 'Tokyo', color: '#0ea5e9', startUTC: 23, endUTC: 8 },
-            { id: 'london', name: 'London', color: '#eab308', startUTC: 7, endUTC: 16 },
-            { id: 'ny', name: 'New York', color: '#ef4444', startUTC: 12, endUTC: 21 }
+            { id: 'sydney', name: 'Sydney', color: '#4b5563', startUTC: 22, endUTC: 7 }, // Gray 600
+            { id: 'tokyo', name: 'Tokyo', color: '#9ca3af', startUTC: 23, endUTC: 8 },   // Gray 400
+            { id: 'london', name: 'London', color: '#e5e7eb', startUTC: 7, endUTC: 16 }, // Gray 200
+            { id: 'ny', name: 'New York', color: '#ffffff', startUTC: 12, endUTC: 21 }   // White
         ];
 
         function populateTimezones() {
@@ -1013,16 +1049,18 @@
                 // Normal block within same day
                 let colStart = Math.floor(startH) + 1; // Grid is 1-indexed
                 let span = Math.ceil(endH - startH);
-                html = `<div class="session-bar" style="background-color: ${session.color}; grid-column: ${colStart} / span ${span};">${session.name}</div>`;
+                let textColor = session.color === '#4b5563' ? '#ffffff' : '#000000'; // Adjust text color for contrast
+                html = `<div class="session-bar" style="background-color: ${session.color}; color: ${textColor}; grid-column: ${colStart} / span ${span};">${session.name}</div>`;
             } else {
                 // Crosses midnight in local timezone, draw two blocks
                 let colStart1 = Math.floor(startH) + 1;
                 let span1 = 25 - colStart1;
-                html += `<div class="session-bar rounded-r-none" style="background-color: ${session.color}; grid-column: ${colStart1} / span ${span1};">${session.name}</div>`;
+                let textColor = session.color === '#4b5563' ? '#ffffff' : '#000000';
+                html += `<div class="session-bar rounded-r-none" style="background-color: ${session.color}; color: ${textColor}; grid-column: ${colStart1} / span ${span1};">${session.name}</div>`;
                 
                 let span2 = Math.ceil(endH);
                 if(span2 > 0) {
-                    html += `<div class="session-bar rounded-l-none" style="background-color: ${session.color}; grid-column: 1 / span ${span2};"></div>`;
+                    html += `<div class="session-bar rounded-l-none" style="background-color: ${session.color}; color: ${textColor}; grid-column: 1 / span ${span2};"></div>`;
                 }
             }
             return html;
