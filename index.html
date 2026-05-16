@@ -1,1012 +1,1078 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Crypto Scalper - Smart Money Concepts</title>
+    <title>The Trap Room | Elite Trading Academy</title>
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #F3F4F6; }
-        ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
-        .hidden-ui { display: none !important; }
-    </style>
-</head>
-<body class="bg-gray-100 h-screen font-sans overflow-hidden text-gray-800 flex">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation Library CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900">
-        <div class="bg-gray-800 p-8 rounded-lg shadow-2xl w-80 text-center border border-gray-700">
-            <div class="text-5xl mb-4">🔒</div>
-            <label class="block text-gray-300 font-semibold mb-4 text-lg">Enter Passcode:</label>
-            <input type="password" id="passcode-input" class="w-full p-2 text-center rounded bg-gray-700 text-white font-bold border border-gray-600 focus:outline-none focus:border-green-500 mb-6" placeholder="****">
-            <button onclick="checkPassword()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition">Login</button>
-            <p id="login-error" class="text-red-400 mt-3 text-sm hidden-ui">Invalid Password!</p>
-        </div>
-    </div>
+    <!-- Moment.js & Moment-Timezone for Advanced Session Logic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
 
-    <!-- MAIN DASHBOARD -->
-    <div id="main-app" class="hidden-ui flex w-full h-full">
-        
-        <!-- LEFT PANEL: Controls & Signals -->
-        <div class="w-1/4 min-w-[340px] bg-gray-100 flex flex-col border-r border-gray-300 shadow-lg z-10 h-full">
-            <div class="bg-gray-800 py-4 text-center shadow-md">
-                <h1 class="text-white text-lg font-bold">⚡ Dual Strategy Scalper</h1>
-            </div>
-
-            <!-- Controls -->
-            <div class="p-3 bg-white border-b border-gray-300 flex flex-col gap-3">
-                
-                <!-- Strategy 1 Controls -->
-                <div class="bg-gray-50 p-2 rounded border border-gray-200">
-                    <div class="text-xs font-bold text-gray-700 mb-2">🛡️ Strategy 1 (SMC 15m)</div>
-                    <div class="flex gap-2 justify-between">
-                        <button id="btn-start-s1" onclick="startStrategy('S1')" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-1.5 px-2 rounded text-xs shadow">▶ Start S1</button>
-                        <button id="btn-stop-s1" onclick="stopStrategy('S1')" disabled class="flex-1 bg-red-500 opacity-50 cursor-not-allowed text-white font-bold py-1.5 px-2 rounded text-xs shadow">⏹ Stop S1</button>
-                    </div>
-                </div>
-
-                <!-- Strategy 2 Controls -->
-                <div class="bg-gray-50 p-2 rounded border border-gray-200">
-                    <div class="text-xs font-bold text-purple-700 mb-2">🔥 Strategy 2 (ICT+SMC 15m/5m)</div>
-                    <div class="flex gap-2 justify-between">
-                        <button id="btn-start-s2" onclick="startStrategy('S2')" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-bold py-1.5 px-2 rounded text-xs shadow">▶ Start S2</button>
-                        <button id="btn-stop-s2" onclick="stopStrategy('S2')" disabled class="flex-1 bg-red-500 opacity-50 cursor-not-allowed text-white font-bold py-1.5 px-2 rounded text-xs shadow">⏹ Stop S2</button>
-                    </div>
-                </div>
-
-                <div class="flex gap-2">
-                    <button onclick="resetStats()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-2 rounded text-xs shadow">📊 Reset All Stats & Trades</button>
-                </div>
-                
-                <div id="lbl-summary" class="text-xs font-bold text-gray-600 w-full text-center bg-gray-100 py-1 rounded border border-gray-200">System Ready</div>
-            </div>
-
-            <!-- Signal Cards Container -->
-            <div id="cards-container" class="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
-                <!-- Cards injected here -->
-            </div>
-        </div>
-
-        <!-- CENTER PANEL: Chart -->
-        <div class="flex-1 bg-white flex flex-col border-r border-gray-300">
-            <div class="py-3 px-6 bg-white border-b border-gray-200 flex justify-between items-center">
-                <h2 class="text-xl font-bold text-gray-800">📈 Live Market Overview</h2>
-            </div>
-            <div class="flex-1 p-4 flex items-center justify-center bg-gray-50 relative">
-                <!-- Chart Canvas -->
-                <canvas id="marketChart" class="bg-white shadow-sm border border-gray-200 rounded w-full h-full object-contain"></canvas>
-            </div>
-        </div>
-
-        <!-- RIGHT PANEL: Telegram Management -->
-        <div class="w-1/4 min-w-[350px] bg-gray-100 flex flex-col shadow-lg z-10 h-full">
-            <div class="bg-blue-600 py-4 text-center shadow-md flex justify-between items-center px-4">
-                <h1 class="text-white text-lg font-bold">✈️ Telegram Manager</h1>
-                <button onclick="deleteAllTgMessages()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-1 px-2 rounded shadow">Delete All</button>
-            </div>
-
-            <!-- Chat Input -->
-            <div class="bg-white p-3 flex flex-col gap-2 border-b border-gray-300 shadow-sm">
-                <label class="font-bold text-sm text-gray-700">Send Custom Message:</label>
-                <div class="flex gap-2">
-                    <input type="text" id="chat-input" class="flex-1 p-2 rounded border border-gray-300 text-sm focus:outline-none focus:border-blue-500" placeholder="Type message...">
-                    <button onclick="sendCustomMsg()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-sm shadow">Send</button>
-                </div>
-            </div>
-
-            <!-- Telegram History List -->
-            <div class="p-2 bg-gray-200 font-bold text-xs text-gray-600 uppercase tracking-wider">Sent Messages & Signals</div>
-            <div id="tg-history-container" class="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
-                <!-- Telegram History items injected here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN JAVASCRIPT LOGIC -->
+    <!-- Tailwind Config for Premium Theme -->
     <script>
-        // ==========================================
-        // SETTINGS & STATE
-        // ==========================================
-        const TELEGRAM_BOT_TOKEN = "8400049635:AAHleIW04zCFXiZXlRDQ8HT3BhqqlzKhChg";
-        const TELEGRAM_CHAT_ID = "@newwwwwwgw";
-        
-        let lastReportMsgId = null;
-        let scannerInterval = null;
-
-        let isRunningS1 = false;
-        let isRunningS2 = false;
-        
-        let activeTradesS1 = {}; 
-        let activeTradesS2 = {}; 
-
-        const symbolsToTrade = [
-            'BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 
-            'ADAUSDT', 'DOGEUSDT', 'MATICUSDT', 'LINKUSDT', 'AVAXUSDT'
-        ];
-
-        let tgHistory = JSON.parse(localStorage.getItem('tg_history') || '[]');
-
-        function checkPassword() {
-            const pwd = document.getElementById('passcode-input').value;
-            if (pwd === "2007") {
-                document.getElementById('login-screen').classList.add('hidden-ui');
-                document.getElementById('main-app').classList.remove('hidden-ui');
-                initCanvas();
-                
-                // Reload state from local storage
-                loadDataFromLocalStorage();
-
-                // Restore UI buttons based on saved state
-                if (isRunningS1) {
-                    document.getElementById('btn-start-s1').disabled = true;
-                    document.getElementById('btn-start-s1').classList.add('opacity-50', 'cursor-not-allowed');
-                    document.getElementById('btn-stop-s1').disabled = false;
-                    document.getElementById('btn-stop-s1').classList.remove('opacity-50', 'cursor-not-allowed');
-                }
-                if (isRunningS2) {
-                    document.getElementById('btn-start-s2').disabled = true;
-                    document.getElementById('btn-start-s2').classList.add('opacity-50', 'cursor-not-allowed');
-                    document.getElementById('btn-stop-s2').disabled = false;
-                    document.getElementById('btn-stop-s2').classList.remove('opacity-50', 'cursor-not-allowed');
-                }
-
-                updateSummary();
-
-                // Auto-start scanner if state was ON
-                if (isRunningS1 || isRunningS2) {
-                    if (scannerInterval === null) {
-                        tradingLoop();
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            gold: '#D4AF37',
+                            blue: '#0EA5E9',
+                            dark: '#0B0F19',
+                            panel: '#151A27',
+                            neon: '#39FF14'
+                        }
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
                     }
                 }
-            } else {
-                document.getElementById('login-error').classList.remove('hidden-ui');
-                document.getElementById('passcode-input').value = "";
             }
         }
+    </script>
 
-        document.getElementById('passcode-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') checkPassword();
-        });
-
-        // ==========================================
-        // DATABASE / STORAGE LOGIC (Local Storage)
-        // ==========================================
-        function saveBotState() {
-            localStorage.setItem('botState', JSON.stringify({ runS1: isRunningS1, runS2: isRunningS2 }));
+    <style>
+        /* Custom Premium Styles */
+        body {
+            background-color: #0B0F19;
+            color: #ffffff;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(212, 175, 55, 0.1) 0px, transparent 50%);
+            background-attachment: fixed;
         }
 
-        function loadDataFromLocalStorage() {
-            let state = JSON.parse(localStorage.getItem('botState') || '{}');
-            isRunningS1 = state.runS1 || false;
-            isRunningS2 = state.runS2 || false;
-            
-            // Re-render TG history immediately
-            renderTgHistory();
+        .glass-panel {
+            background: rgba(21, 26, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
-        function saveSignal(symbol, type, entry, tp, sl, strategy) {
-            let signals = JSON.parse(localStorage.getItem('smc_signals') || '[]');
-            let sigId = Date.now() + Math.floor(Math.random() * 100);
-            signals.push({ id: sigId, time: new Date().toISOString(), symbol, type, entry, tp, sl, status: 'PENDING', strategy: strategy });
-            localStorage.setItem('smc_signals', JSON.stringify(signals));
-            return sigId;
+        .gold-text-gradient {
+            background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
-        function updateSignalStatus(sigId, newStatus) {
-            let signals = JSON.parse(localStorage.getItem('smc_signals') || '[]');
-            let signal = signals.find(s => s.id === sigId);
-            if(signal) {
-                signal.status = newStatus;
-                localStorage.setItem('smc_signals', JSON.stringify(signals));
-            }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0B0F19; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+
+        /* Tabs */
+        .tab-content { display: none; opacity: 0; transition: opacity 0.4s ease; }
+        .tab-content.active { display: block; opacity: 1; animation: slideUp 0.5s ease forwards; }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
-        function getDailyReport() {
-            let signals = JSON.parse(localStorage.getItem('smc_signals') || '[]');
-            let today = new Date();
-            today.setHours(0,0,0,0);
-            
-            let total = 0, wins = 0, losses = 0, pending = 0, be = 0;
-            
-            signals.forEach(s => {
-                if(new Date(s.time) >= today) {
-                    total++;
-                    if(s.status === 'WIN') wins++;
-                    else if(s.status === 'LOSS') losses++;
-                    else if(s.status === 'BREAK EVEN') be++;
-                    else if(s.status === 'PENDING') pending++;
-                }
-            });
-
-            let report = `🔹 *Total Trades:* ${total}\n`;
-            report += `✅ *Total Wins:* ${wins}\n`;
-            report += `❌ *Total Losses:* ${losses}\n`;
-            report += `⚖️ *Break Even:* ${be}\n`;
-            report += `⏳ *Running:* ${pending}\n\n`;
-
-            if ((wins + losses) > 0) {
-                let winRate = (wins / (wins + losses)) * 100;
-                report += `🎯 *Win Rate:* ${winRate.toFixed(2)}%\n`;
-            } else {
-                report += `🎯 *Win Rate:* N/A`;
-            }
-            return { reportText: report, summaryLine: `Total: ${total} | W: ${wins} | L: ${losses}` };
+        .nav-link { position: relative; padding-bottom: 0.25rem; }
+        .nav-link::after {
+            content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 0;
+            background-color: #D4AF37; transition: width 0.3s ease;
         }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+        .nav-link.active { color: #D4AF37; }
 
-        function updateSummary() {
-            let statusText = [];
-            if (isRunningS1) statusText.push("S1: ON"); else statusText.push("S1: OFF");
-            if (isRunningS2) statusText.push("S2: ON"); else statusText.push("S2: OFF");
-            
-            let stats = getDailyReport();
-            document.getElementById('lbl-summary').innerText = `${statusText.join(' | ')} | ${stats.summaryLine}`;
+        /* Session Chart CSS Grid (BabyPips Style) */
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(24, 1fr);
+            gap: 1px;
+            background-color: rgba(255,255,255,0.05);
+            position: relative;
+            padding-top: 20px;
         }
+        .timeline-hour {
+            text-align: center;
+            font-size: 0.65rem;
+            color: #9ca3af;
+            border-left: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+        .session-row {
+            display: grid;
+            grid-template-columns: repeat(24, 1fr);
+            height: 40px;
+            margin-bottom: 8px;
+            position: relative;
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+        .session-bar {
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.75rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            transition: all 0.5s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        #current-time-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #39FF14;
+            z-index: 10;
+            box-shadow: 0 0 10px #39FF14;
+            transition: left 60s linear;
+        }
+        .current-time-label {
+            position: absolute;
+            top: -20px;
+            transform: translateX(-50%);
+            background: #39FF14;
+            color: black;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col font-sans">
 
-        function resetStats() {
-            if(confirm("Are you sure you want to reset all trades and stats?")) {
-                if(isRunningS1) stopStrategy('S1');
-                if(isRunningS2) stopStrategy('S2');
-
-                localStorage.removeItem('smc_signals');
-                activeTradesS1 = {};
-                activeTradesS2 = {};
-                document.getElementById('cards-container').innerHTML = '';
+    <nav class="sticky top-0 w-full z-50 glass-panel border-b border-gray-800 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer group" onclick="switchTab('home')">
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-brand-gold to-yellow-800 flex items-center justify-center font-bold text-2xl text-white shadow-[0_0_15px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform">
+                        TR
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-extrabold text-xl tracking-widest uppercase text-white leading-none">The Trap Room</span>
+                        <span class="text-[10px] text-brand-gold tracking-[0.2em] uppercase mt-1">Elite Trading</span>
+                    </div>
+                </div>
                 
-                if (typeof drawPlaceholder === 'function') {
-                    drawPlaceholder();
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide text-gray-300">
+                    <button onclick="switchTab('home')" class="nav-link active hover:text-white transition-colors" data-target="home">Mentorship & Pricing</button>
+                    <button onclick="switchTab('tools')" class="nav-link hover:text-white transition-colors" data-target="tools">Advanced Tools</button>
+                    <button onclick="switchTab('chart')" class="nav-link hover:text-white transition-colors" data-target="chart">Live Terminal</button>
+                    <button onclick="switchTab('history')" class="nav-link hover:text-white transition-colors" data-target="history">Knowledge Base</button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-t border-gray-800 absolute w-full">
+            <div class="px-4 py-4 flex flex-col space-y-4">
+                <button onclick="switchTab('home'); closeMobileMenu();" class="text-left font-bold text-gray-300 border-b border-gray-800 pb-2">Mentorship & Pricing</button>
+                <button onclick="switchTab('tools'); closeMobileMenu();" class="text-left font-bold text-gray-300 border-b border-gray-800 pb-2">Advanced Tools</button>
+                <button onclick="switchTab('chart'); closeMobileMenu();" class="text-left font-bold text-gray-300 border-b border-gray-800 pb-2">Live Terminal</button>
+                <button onclick="switchTab('history'); closeMobileMenu();" class="text-left font-bold text-gray-300 pb-2">Knowledge Base</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow">
+        
+        <!-- ================= TAB 1: HOME, COURSE & PRICING ================= -->
+        <div id="home" class="tab-content active pt-10 pb-20">
+            
+            <!-- Hero Section -->
+            <section class="px-4 max-w-7xl mx-auto mb-20 text-center relative" data-aos="fade-up">
+                <!-- Decorative glowing orbs -->
+                <div class="absolute top-1/2 left-1/4 w-64 h-64 bg-brand-blue rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-pulse"></div>
+                <div class="absolute top-1/2 right-1/4 w-64 h-64 bg-brand-gold rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-pulse" style="animation-delay: 1s;"></div>
+                
+                <div class="relative z-10">
+                    <div class="inline-flex items-center gap-2 border border-brand-gold/30 bg-brand-gold/10 px-4 py-1.5 rounded-full mb-8">
+                        <span class="w-2 h-2 rounded-full bg-brand-gold animate-ping"></span>
+                        <span class="text-xs font-bold uppercase tracking-widest text-brand-gold">Enrollment Open</span>
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-7xl font-extrabold uppercase tracking-tight mb-6 leading-tight">
+                        Escape the <span class="gold-text-gradient">Retail Matrix</span>
+                    </h1>
+                    
+                    <!-- MASSIVE 1-ON-1 BADGE -->
+                    <div class="my-10" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="inline-flex flex-col items-center justify-center p-1 rounded-2xl bg-gradient-to-r from-brand-gold via-yellow-200 to-brand-gold shadow-[0_0_50px_rgba(212,175,55,0.4)] transform hover:scale-105 transition-transform duration-300">
+                            <div class="bg-[#0B0F19] px-6 py-5 md:px-10 md:py-6 rounded-xl flex items-center gap-5 md:gap-8">
+                                <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-brand-gold/20 flex items-center justify-center border border-brand-gold/50 shadow-[inset_0_0_20px_rgba(212,175,55,0.5)]">
+                                    <i class="fas fa-user-tie text-4xl md:text-5xl text-brand-gold"></i>
+                                </div>
+                                <div class="text-left">
+                                    <span class="block text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-gold to-yellow-400 uppercase tracking-widest drop-shadow-lg leading-none mb-2">1-ON-1 PRIVATE</span>
+                                    <span class="block text-xs md:text-lg font-bold text-white uppercase tracking-[0.3em]">Individual Mentorship</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-xl md:text-2xl max-w-3xl mx-auto mb-4 font-light text-gray-300">
+                        The Ultimate Institutional Trading Experience. <strong class="text-white">No crowded classes. Just you and the mentor.</strong>
+                    </p>
+                    <p class="text-lg max-w-4xl mx-auto mb-10 text-gray-400">
+                        Stop trading like a retail trader. Master Price Action, Advanced ICT (Inner Circle Trader) concepts, and Institutional Orderflow Data Analysis from the ground up to trade alongside the banks.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row justify-center gap-6">
+                        <a href="#pricing-section" class="bg-brand-gold text-black px-8 py-4 rounded-lg font-bold text-lg hover:bg-yellow-500 transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] uppercase tracking-wide">
+                            <i class="fas fa-lock-open mr-2"></i> Unlock Mentorship
+                        </a>
+                        <a href="#history" onclick="switchTab('history')" class="glass-panel text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white/10 transition-all uppercase tracking-wide border border-white/10">
+                            Explore Knowledge
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="pricing-section" class="px-4 max-w-5xl mx-auto mb-24 relative" data-aos="zoom-in">
+                <div class="absolute -inset-1 bg-gradient-to-r from-brand-gold via-yellow-600 to-brand-gold rounded-2xl blur opacity-25"></div>
+                
+                <div class="glass-panel p-8 md:p-12 rounded-2xl relative overflow-hidden">
+                    <!-- Premium Badge -->
+                    <div class="absolute top-0 right-0 bg-brand-gold text-black text-xs font-bold px-4 py-1 rounded-bl-lg uppercase tracking-widest">
+                        VIP Access
+                    </div>
+                    
+                    <div class="text-center mb-10">
+                        <h2 class="text-4xl font-extrabold uppercase tracking-wide mb-3 gold-text-gradient">The Trap Room Elite</h2>
+                        <p class="text-gray-300 text-lg">Strictly <span class="text-brand-gold font-bold">1-on-1 Individual Sessions</span>, complete curriculum, and lifetime community access.</p>
+                    </div>
+                    
+                    <div class="flex flex-col md:flex-row justify-between items-center border-b border-white/10 pb-10 mb-10 gap-8">
+                        <div class="text-center md:text-left">
+                            <div class="flex items-end justify-center md:justify-start gap-2 mb-2">
+                                <span class="text-6xl font-extrabold text-white">25,000</span>
+                                <span class="text-2xl font-bold text-brand-gold mb-1">LKR</span>
+                            </div>
+                            <p class="text-sm text-gray-500 uppercase tracking-widest">One-time payment. Lifetime Access.</p>
+                        </div>
+                        
+                        <!-- WhatsApp Payment CTA -->
+                        <a href="https://wa.me/94700000000?text=I%20want%20to%20join%20The%20Trap%20Room%20Elite%20Mentorship%20for%2025000%20LKR" target="_blank" 
+                           class="w-full md:w-auto bg-[#25D366] hover:bg-[#1ebd5a] text-white px-8 py-4 rounded-xl text-lg font-bold uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(37,211,102,0.4)] flex items-center justify-center gap-3">
+                            <i class="fab fa-whatsapp text-2xl"></i> Pay & Join Via WhatsApp
+                        </a>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-x-12 gap-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">A-Z Technical Setup</h4>
+                                <p class="text-sm text-gray-400">Master Forex basics, Brokers, MT4/MT5, and TradingView configurations.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-full bg-brand-gold/20 text-brand-gold flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-gem"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Complete ICT Mastery</h4>
+                                <p class="text-sm text-gray-400">Identify SMC, Liquidity Sweeps, FVG, Order Blocks, and Killzones accurately.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-full bg-brand-blue/20 text-brand-blue flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Advanced Orderflow</h4>
+                                <p class="text-sm text-gray-400">Read Footprint Charts, Level 2 Data, and Delta Analysis to track institutional volume.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">4 Secret Strategies & Prop Firms</h4>
+                                <p class="text-sm text-gray-400">Learn 4 private, high-probability strategies and how to consistently pass FTMO/FundedNext.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="px-4 max-w-7xl mx-auto" data-aos="fade-up">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-extrabold uppercase tracking-wide mb-3 gold-text-gradient">Comprehensive Curriculum Map</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto text-lg">From essential retail foundation to advanced institutional orderflow mastery. A complete transformation over two months.</p>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-10">
+                    
+                    <!-- ================= MONTH 1 ================= -->
+                    <div class="space-y-6">
+                        <!-- Month 1 Header -->
+                        <div class="inline-flex items-center gap-3 px-6 py-4 bg-brand-gold/10 border border-brand-gold/30 rounded-xl w-full shadow-[0_0_15px_rgba(212,175,55,0.15)]">
+                            <div class="w-10 h-10 rounded-full bg-brand-gold/20 flex items-center justify-center text-brand-gold shrink-0">
+                                <i class="fas fa-chess-knight text-xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white uppercase tracking-wider">Month 1: Foundation & ICT</h3>
+                        </div>
+
+                        <!-- Week 1 -->
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-gold transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 1: Introduction to Trading & Core Basics</h4>
+                            
+                            <div class="space-y-5">
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 1</span>
+                                    <span class="text-gray-200 font-semibold ml-2">Forex Basics A to Z (Part 1)</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> What is Forex? Market participants (Retail vs. Institutions)</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Pips, Lot sizes, Leverage & Margin</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Brokers, Spreads</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Introduction to MT4/MT5 & TradingView (Platform tour)</li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 2</span>
+                                    <span class="text-gray-200 font-semibold ml-2">Forex Basics A to Z (Part 2) & Price Action</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Types of Market Trends (Uptrend, Downtrend, Consolidation)</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Basic Market Structure (HH, HL, LH, LL)</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Support & Resistance, Trendlines</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Important Candlestick Anatomy & Basic Patterns</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Week 2 -->
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-gold transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 2: Advanced Basics & Intro to ICT</h4>
+                            
+                            <div class="space-y-5">
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 3</span>
+                                    <span class="text-gray-200 font-semibold ml-2">Risk Management & Trading Psychology</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Risk to Reward Ratio (RRR) & Position Sizing</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Proper Stop Loss (SL) & Take Profit (TP) placement</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Emotions in trading (FOMO, Greed, Fear) & Building a trading plan</li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 4</span>
+                                    <span class="text-gray-200 font-semibold ml-2">ICT Basics - Liquidity & Time</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Introduction to Smart Money Concepts (SMC) & ICT</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> What is Liquidity? (Buy Side Liquidity - BSL / Sell Side Liquidity - SSL)</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Trading Sessions, Killzones & True Day Open</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Asian Range, London Sweep, New York Continuation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Week 3 -->
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-gold transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 3: ICT Core Mechanics</h4>
+                            
+                            <div class="space-y-5">
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 5</span>
+                                    <span class="text-gray-200 font-semibold ml-2">ICT Market Structure</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Market Structure Shift (MSS) vs. Break of Structure (BOS)</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Displacement, Market gaps, and Price delivery</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Fair Value Gaps (FVG) / Imbalances - How to identify and trade them</li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 6</span>
+                                    <span class="text-gray-200 font-semibold ml-2">ICT Order Blocks & Institutional Levels</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> What is an Order Block (OB)? How to find high-probability OBs.</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Breaker Blocks & Mitigation Blocks</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Premium & Discount Zones (Fibonacci application)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Week 4 -->
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-gold transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 4: Advanced ICT Concepts</h4>
+                            
+                            <div class="space-y-5">
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 7</span>
+                                    <span class="text-gray-200 font-semibold ml-2">ICT Advanced - AMD & Liquidity Runs</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> The Power of 3 (PO3) / AMD Cycle: Accumulation, Manipulation, Distribution</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Inducement & Engineered Liquidity</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Sweep of liquidity setups (Turtle Soup)</li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-gold text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 8</span>
+                                    <span class="text-gray-200 font-semibold ml-2">Top-Down Analysis (ICT Application)</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Multi-timeframe analysis (HTF bias to LTF entry)</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-gold/50 mr-2 mt-1 text-[10px]"></i> Putting ICT concepts together (Liquidity + MSS + FVG/OB = Trade Setup)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ================= MONTH 2 ================= -->
+                    <div class="space-y-6">
+                        <!-- Month 2 Header -->
+                        <div class="inline-flex items-center gap-3 px-6 py-4 bg-brand-blue/10 border border-brand-blue/30 rounded-xl w-full shadow-[0_0_15px_rgba(14,165,233,0.15)]">
+                            <div class="w-10 h-10 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue shrink-0">
+                                <i class="fas fa-layer-group text-xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white uppercase tracking-wider">Month 2: Orderflow Mastery & Strategies</h3>
+                        </div>
+
+                        <!-- Week 5 -->
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-blue transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 5: Introduction to Orderflow</h4>
+                            
+                            <div class="space-y-5">
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-blue text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 9</span>
+                                    <span class="text-gray-200 font-semibold ml-2">Orderflow Basics</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> What is Orderflow? Candlestick vs. Orderflow footprint</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Understanding Level 2 Data & DOM (Depth of Market)</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Volume ticks basic</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Setting up Orderflow charts / Indicators</li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-blue text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 10</span>
+                                    <span class="text-gray-200 font-semibold ml-2">Reading the Footprint & Delta</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> How to read a Footprint Chart</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Understanding Delta (Positive vs. Negative Delta, Cumulative Delta), cvd divergace</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Point of Control (POC) & Value Area (VA) basics</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Week 6 -->
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-blue transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 6: Advanced Orderflow & Confluence</h4>
+                            
+                            <div class="space-y-5">
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-blue text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 11</span>
+                                    <span class="text-gray-200 font-semibold ml-2">Advanced Orderflow Concepts</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Imbalances (Buying/Selling Imbalances)</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Absorption & Exhaustion (Identifying trapped traders)</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> vwap</li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-blue text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 12</span>
+                                    <span class="text-gray-200 font-semibold ml-2">The Master Confluence (ICT + Orderflow)</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Using Orderflow to confirm ICT setups (E.g., Seeing absorption at an ICT Order Block)</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> Confirming a Fair Value Gap (FVG) with Footprint data</li>
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-blue/50 mr-2 mt-1 text-[10px]"></i> High-probability entry triggers</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Week 7 & 8 -->
+                        <div class="glass-panel p-6 rounded-xl border-l-4 border-gray-500 hover:border-brand-neon transition-colors duration-300 group">
+                            <h4 class="text-xl font-extrabold text-white mb-5 uppercase tracking-wide border-b border-white/10 pb-2">Week 7 & 8: The 4 Secret Strategies</h4>
+                            
+                            <div class="space-y-5">
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-neon text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 13</span>
+                                    <span class="text-gray-200 font-semibold ml-2">Strategy 1</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-neon/50 mr-2 mt-1 text-[10px]"></i> High-probability setup execution rules & mechanics</li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-neon text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 14</span>
+                                    <span class="text-gray-200 font-semibold ml-2">Strategy 2</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-neon/50 mr-2 mt-1 text-[10px]"></i> Advanced institutional trap setups & liquidity sweeps</li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-neon text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 15</span>
+                                    <span class="text-gray-200 font-semibold ml-2">Strategy 3</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-neon/50 mr-2 mt-1 text-[10px]"></i> Orderflow and footprint confirmed entries</li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <span class="inline-block bg-gray-800 text-brand-neon text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Day 16</span>
+                                    <span class="text-gray-200 font-semibold ml-2">Strategy 4</span>
+                                    <ul class="mt-2 space-y-1">
+                                        <li class="text-sm text-gray-400 flex items-start"><i class="fas fa-angle-right text-brand-neon/50 mr-2 mt-1 text-[10px]"></i> The ultimate confluence strategy & prop firm execution</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================= TAB 2: TOOLS (SESSIONS & CALCULATOR) ================= -->
+        <div id="tools" class="tab-content pt-10 pb-20 px-4 max-w-7xl mx-auto">
+            <div class="text-center mb-12" data-aos="fade-down">
+                <h2 class="text-4xl font-extrabold uppercase tracking-wide mb-3 gold-text-gradient">Advanced Trading Tools</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Custom-built Market Sessions Visualizer and Lot Size Calculator to streamline your trading execution.</p>
+            </div>
+
+            <!-- Market Sessions Visualizer (BabyPips Style) -->
+            <div class="glass-panel p-6 md:p-10 rounded-2xl mb-12" data-aos="fade-up">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-white/10 pb-6">
+                    <div>
+                        <h3 class="text-2xl font-bold uppercase flex items-center gap-3">
+                            <i class="far fa-clock text-brand-blue"></i> Market Sessions Visualizer
+                        </h3>
+                        <p class="text-sm text-gray-400 mt-1">Live market open hours and overlaps adjusted dynamically to your local timezone.</p>
+                    </div>
+                    
+                    <!-- Timezone Selector -->
+                    <div class="w-full md:w-64">
+                        <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Select Your Timezone</label>
+                        <select id="timezone-select" onchange="renderSessions()" class="w-full bg-brand-panel border border-gray-700 text-white p-3 rounded-lg outline-none focus:border-brand-gold appearance-none font-bold">
+                            <!-- Populated by JS -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Timeline Graphic Area -->
+                <div class="relative w-full overflow-x-auto pb-4">
+                    <div class="min-w-[700px] pr-4">
+                        <!-- Hours Header -->
+                        <div class="timeline-grid mb-2" id="timeline-hours-header">
+                            <!-- JS generates 0 to 23 -->
+                        </div>
+
+                        <!-- Session Container -->
+                        <div class="relative w-full bg-gray-900/50 border border-gray-800 rounded-lg p-2 pt-8" id="session-bars-container">
+                            <!-- Current Time Indicator -->
+                            <div id="current-time-line">
+                                <div class="current-time-label" id="current-time-label">00:00</div>
+                            </div>
+                            
+                            <!-- Sydney -->
+                            <div class="session-row" id="row-sydney"></div>
+                            <!-- Tokyo -->
+                            <div class="session-row" id="row-tokyo"></div>
+                            <!-- London -->
+                            <div class="session-row" id="row-london"></div>
+                            <!-- New York -->
+                            <div class="session-row" id="row-ny"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Universal Lot & Risk Calculator -->
+            <div class="glass-panel p-6 md:p-10 rounded-2xl max-w-4xl mx-auto" data-aos="fade-up">
+                <h3 class="text-2xl font-bold uppercase mb-2 border-b border-white/10 pb-4 flex items-center gap-3">
+                    <i class="fas fa-calculator text-brand-gold"></i> Universal Position Size Calculator
+                </h3>
+                <p class="text-sm text-gray-400 mb-8">Calculate precise position sizing for Forex, Indices, and Commodities to ensure strict risk management.</p>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Inputs -->
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Account Currency</label>
+                            <select id="calc-currency" class="w-full bg-brand-panel border border-gray-700 text-white p-3 rounded-lg outline-none focus:border-brand-gold transition-colors">
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Account Balance</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-3 text-gray-500 font-bold">$</span>
+                                <input type="number" id="calc-balance" class="w-full bg-brand-panel border border-gray-700 text-white p-3 pl-8 rounded-lg outline-none focus:border-brand-gold transition-colors font-mono" placeholder="10000" value="10000">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Risk (%)</label>
+                                <div class="relative">
+                                    <input type="number" id="calc-risk" class="w-full bg-brand-panel border border-gray-700 text-white p-3 rounded-lg outline-none focus:border-brand-gold transition-colors font-mono" placeholder="1.0" value="1.0" step="0.1">
+                                    <span class="absolute right-3 top-3 text-gray-500 font-bold">%</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Stop Loss (Pips/Pts)</label>
+                                <input type="number" id="calc-sl" class="w-full bg-brand-panel border border-gray-700 text-white p-3 rounded-lg outline-none focus:border-brand-gold transition-colors font-mono" placeholder="15" value="15">
+                            </div>
+                        </div>
+
+                        <!-- Advanced Asset Selection -->
+                        <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-800">
+                            <label class="block text-xs uppercase tracking-widest text-brand-blue mb-2">Asset Class / Pair Configuration</label>
+                            <select id="calc-asset" onchange="updateAssetConfig()" class="w-full bg-brand-panel border border-gray-700 text-white p-3 rounded-lg outline-none focus:border-brand-blue transition-colors mb-3">
+                                <option value="10" data-type="forex-major">Major Forex (XXX/USD) - $10/pip</option>
+                                <option value="7.5" data-type="forex-cross">Cross Pairs (e.g., EUR/GBP) ~ $7.5/pip</option>
+                                <option value="100" data-type="indices">Indices (US30, NAS100) - $100/point (varies)</option>
+                                <option value="10" data-type="gold">XAUUSD (Gold) - $10/pip</option>
+                                <option value="custom" data-type="custom">Custom Pip Value...</option>
+                            </select>
+                            
+                            <div id="custom-pip-div" class="hidden">
+                                <label class="block text-[10px] uppercase text-gray-500 mb-1">Custom Value per 1 Standard Lot</label>
+                                <input type="number" id="calc-pipvalue" value="10" class="w-full bg-brand-panel border border-gray-700 text-white p-2 rounded outline-none focus:border-brand-gold font-mono text-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Output -->
+                    <div class="flex flex-col justify-center">
+                        <button onclick="calculateLotSize()" class="w-full bg-brand-gold text-black hover:bg-yellow-500 font-bold py-4 rounded-xl uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(212,175,55,0.2)] mb-8">
+                            Calculate Position
+                        </button>
+
+                        <div class="bg-[#0B0F19] border border-gray-800 rounded-xl p-6 text-center shadow-inner relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-blue to-brand-gold"></div>
+                            
+                            <h4 class="text-xs uppercase tracking-widest text-gray-500 mb-2">Recommended Lot Size</h4>
+                            <div class="text-6xl font-extrabold text-white mb-6 tracking-tighter" id="result-lot">0.00</div>
+                            
+                            <div class="grid grid-cols-2 gap-4 border-t border-gray-800 pt-4">
+                                <div>
+                                    <div class="text-[10px] uppercase text-gray-500 mb-1">Value at Risk</div>
+                                    <div class="text-xl font-bold text-red-400" id="result-money">$0.00</div>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] uppercase text-gray-500 mb-1">Units (Volume)</div>
+                                    <div class="text-xl font-bold text-gray-300 font-mono" id="result-units">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: TRADINGVIEW CHART ================= -->
+        <div id="chart" class="tab-content pt-10 pb-20 px-4 max-w-7xl mx-auto h-[85vh]">
+            <div class="flex justify-between items-end mb-4" data-aos="fade-down">
+                <h2 class="text-3xl font-extrabold uppercase tracking-wide gold-text-gradient">Live Market Terminal</h2>
+                <div class="text-xs text-gray-500 uppercase tracking-widest"><span class="w-2 h-2 inline-block bg-green-500 rounded-full animate-pulse mr-1"></span> Live Data feed</div>
+            </div>
+            <div class="w-full h-full glass-panel rounded-xl overflow-hidden border border-gray-800" id="tv-container">
+                <!-- TradingView Widget injected via JS -->
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: HISTORY & KNOWLEDGE ================= -->
+        <div id="history" class="tab-content pt-10 pb-20 px-4 max-w-7xl mx-auto">
+            <div class="text-center mb-16" data-aos="fade-down">
+                <h2 class="text-5xl font-extrabold uppercase tracking-wide mb-4 gold-text-gradient">The Knowledge Archive</h2>
+                <p class="text-gray-400 max-w-3xl mx-auto text-lg">From the origins of the Forex market to modern Interbank Price Delivery Algorithms (IPDA) and Orderflow.</p>
+            </div>
+            
+            <div class="space-y-32">
+                
+                <!-- Forex History Deep Dive -->
+                <div class="flex flex-col lg:flex-row gap-10 items-start" data-aos="fade-up">
+                    <div class="w-full lg:w-5/12 sticky top-24">
+                        <div class="rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.15)] border border-gray-800 relative group">
+                            <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-all z-10 duration-500"></div>
+                            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=1000" alt="Wall Street History" class="w-full h-[600px] object-cover transform group-hover:scale-105 transition-transform duration-700">
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-7/12">
+                        <div class="inline-block px-3 py-1 border border-brand-gold text-brand-gold text-xs font-bold uppercase tracking-widest rounded-full mb-4">Origins & Evolution</div>
+                        <h3 class="text-4xl font-extrabold mb-6">History of Global FX <br><span class="text-2xl text-gray-500">(The Macro Foundation)</span></h3>
+                        
+                        <div class="space-y-6 text-gray-300 text-justify leading-relaxed font-light">
+                            <p>The Foreign Exchange (Forex) market is the undisputed titan of global finance, operating as an intricate, decentralized, over-the-counter (OTC) ecosystem where currencies are exchanged to determine global macroeconomic valuations. Processing a staggering daily trading volume exceeding $7.5 trillion, it dwarfs all equity, options, and futures markets combined. To truly master the modern algorithmic environment, an elite trader must fundamentally understand the historical evolution and the underlying macroeconomic forces that birthed the liquidity structures we navigate today.</p>
+                            
+                            <p>The earliest origins of currency exchange trace back millennia, long before the advent of digitized charts and high-frequency algorithms. From the primitive barter systems of ancient Mesopotamia to the first minted electrum coins of Lydia in the 6th century BCE, human civilization has inherently sought a standardized medium of exchange. During the Renaissance, the powerful Medici family in Florence revolutionized international trade by pioneering the banking system and issuing 'bills of exchange.' This innovation acted as the primitive precursor to modern currency trading, allowing global merchants to bypass the logistical nightmare and physical danger of transporting heavy gold across treacherous trade routes.</p>
+                            
+                            <p>The dawn of the modern financial era, however, is firmly anchored in the implementation of the Gold Standard. Adopted initially by the United Kingdom in 1821 and subsequently by the rest of the industrialized world, the Gold Standard strictly pegged national fiat currencies to a specific, tangible amount of physical gold. This created a highly rigid fixed exchange rate system, establishing an era of unprecedented global economic predictability. However, this system severely restricted a sovereign government's monetary policy, stripping them of the ability to artificially stimulate their economies during times of severe recession or crisis through the printing of unbacked currency.</p>
+                            
+                            <p>The structural integrity of the Gold Standard met its catastrophic demise during the financial strain of World War I. Desperate to fund global military operations, European nations aggressively suspended gold convertibility and began mass-printing unbacked fiat money. This reckless expansion of the monetary supply led to rampant hyperinflation, most notably in the Weimar Republic of Germany, completely destabilizing the global economy and proving that rigid gold pegs could not survive extreme geopolitical warfare.</p>
+                            
+                            <p>Out of the smoldering ashes of World War II emerged the single most monumental financial treaty in history: the Bretton Woods Agreement of 1944. Representatives from 44 allied nations convened in New Hampshire to forge a completely new global economic order. They systematically designated the United States Dollar (USD) as the world's primary reserve currency, pegging it directly to gold at an unchangeable rate of $35 per troy ounce. Every other major global currency was then pegged not to gold, but to the US Dollar itself, establishing a period of engineered financial stability dominated by absolute American economic hegemony.</p>
+                            
+                            <p>However, by the late 1960s, the systemic flaws of Bretton Woods became glaringly apparent. Funding the astronomical costs of the Vietnam War and President Lyndon B. Johnson's massive "Great Society" domestic programs caused US gold reserves to dwindle dangerously. Foreign nations, noticing the inflation of the dollar, aggressively sought to redeem their excess dollars for physical American gold. Fearing a complete depletion of Fort Knox, on August 15, 1971, President Richard Nixon unilaterally suspended the direct convertibility of the dollar into gold.</p>
+                            
+                            <p>Known to history as the "Nixon Shock," this singular, unprecedented executive action entirely shattered the Bretton Woods system. Overnight, it birthed the modern era of Floating Exchange Rates—the highly chaotic, speculation-driven, and algorithmically manipulated free market we trade today. Currencies were no longer backed by tangible assets; their value was strictly determined by supply, demand, central bank interest rates, and institutional speculation.</p>
+                            
+                            <p>The 1980s introduced a terrifying new dynamic to the markets: coordinated central bank intervention. Major institutions realized they could no longer control currency values in isolation against the immense weight of the floating market. The Plaza Accord of 1985 saw the G5 nations explicitly collude to intentionally depreciate the US Dollar to balance trade deficits. Just two years later, the Louvre Accord of 1987 attempted to violently halt that exact same decline. These massive macroeconomic interventions taught early institutional traders a vital lesson: the market is not organic; it is heavily engineered by policy and liquidity injections.</p>
+                            
+                            <p>The late 1990s and early 2000s marked the technological renaissance of the Forex industry. The launch of proprietary platforms like Reuters Dealing and the Electronic Broking Services (EBS) forcibly moved institutional trading from chaotic telephone desks to sterile computer screens. Crucially, the advent of internet-based retail trading platforms, such as MetaTrader 4, democratized access to the markets. For the very first time, individual retail traders could leverage micro-lots from their home computers, unknowingly bringing a massive, constant influx of "dumb money" liquidity directly into the institutional slaughterhouse.</p>
+                            
+                            <p>Today, the interbank market is overwhelmingly governed by high-frequency trading (HFT) algorithms, continuous quantitative easing, and artificial intelligence. Tier-1 Liquidity Providers (LPs) such as JPMorgan, UBS, Deutsche Bank, and Citi absolutely control the pricing network. They do not trade based on retail support lines or lagging indicators; they trade based on complex liquidity engineering, aggressive stop-hunting, and executing multi-billion-dollar orders without causing market impact. To survive, retail traders must abandon their antiquated strategies and learn to read the algorithmic footprints left behind by these apex predators.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ICT / M.J Huddleston -->
+                <div class="flex flex-col lg:flex-row-reverse gap-10 items-start" data-aos="fade-up">
+                    <div class="w-full lg:w-5/12 sticky top-24">
+                        <div class="rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(14,165,233,0.15)] border border-gray-800 relative group">
+                            <div class="absolute inset-0 bg-brand-blue/20 mix-blend-overlay group-hover:bg-transparent transition-all z-10 duration-500"></div>
+                            <img src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&q=80&w=1000" alt="Chess Strategy representing ICT" class="w-full h-[600px] object-cover transform group-hover:scale-105 transition-transform duration-700">
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-7/12">
+                        <div class="inline-block px-3 py-1 border border-brand-blue text-brand-blue text-xs font-bold uppercase tracking-widest rounded-full mb-4">The Architect of SMC</div>
+                        <h3 class="text-4xl font-extrabold mb-6">M.J. Huddleston & ICT <br><span class="text-2xl text-gray-500">(The Inner Circle Trader)</span></h3>
+                        
+                        <div class="space-y-6 text-gray-300 text-justify leading-relaxed font-light">
+                            <p>The global landscape of retail trading education was violently disrupted and forever altered by the emergence of Michael J. Huddleston, universally known as The Inner Circle Trader (ICT). For decades, retail education was entirely dominated by the exact same regurgitated, failing concepts: retail support and resistance, moving average crossovers, RSI divergences, and geometric chart patterns (flags, pennants, and wedges). Huddleston recognized early in his career that these concepts were not just statistically flawed; they were intentionally popularized by market makers to engineer massive pools of liquidity for institutional algorithms to systematically prey upon.</p>
+                            
+                            <p>Huddleston's unparalleled journey spanned over 30 years of obsessive tape reading, forensic chart analysis, and reverse-engineering the absolute highest levels of market movements. He hypothesized—and subsequently proved to millions of students worldwide—that the global financial markets are entirely devoid of organic buying and selling pressure. Instead, they are completely controlled, manipulated, and scheduled by a highly sophisticated, central bank-sponsored entity known as the Interbank Price Delivery Algorithm (IPDA).</p>
+                            
+                            <p>The core, undeniable philosophy of ICT rests on the singular premise that IPDA seeks only two things in the marketplace: the engineering of Liquidity and the rebalancing of algorithmic Inefficiencies. Liquidity represents resting orders in the market—specifically, the Stop Losses of uninformed retail traders. When retail traders are explicitly taught by mainstream books to place their stop losses neatly above a "double top" or tightly below a "trendline," they are unknowingly placing massive, highly visible pools of liquidity (Buy Side and Sell Side Liquidity) precisely where mega-institutions need them to be.</p>
+                            
+                            <p>To execute a staggering multi-billion dollar buy order, a Tier-1 institution cannot simply press "buy" at the current market price. Doing so would instantly skyrocket the price, completely ruining their average entry price and causing massive slippage. Instead, they must find willing sellers to pair their massive buy orders against. By artificially driving the price down violently through retail support levels—a move known in ICT as a "Stop Hunt," "Judas Swing," or "Turtle Soup"—they trigger millions of retail sell stops. These triggered sell stops are instantly absorbed by the institution's massive, resting buy orders, perfectly filling their position before reversing the market aggressively higher.</p>
+                            
+                            <p>A fundamental pillar of ICT theory that decodes the true anatomy of a daily candlestick is the Power of 3 (AMD): Accumulation, Manipulation, and Distribution. The market first Accumulates institutional positions during a low-volatility period, most notably the Asian Session range. It then explicitly Manipulates price in the exact opposite direction of the true intended daily trend (often triggering stops during the London Killzone) to trap breakout traders. Finally, the algorithm Distributes price aggressively toward the true daily objective during the high-volume New York session.</p>
+                            
+                            <p>ICT completely strips away the illusion of lagging indicators, violently shifting the trader's paradigm to view the market purely through the lens of Time and Price. Time is always the absolute most critical factor; price is secondary. Algorithmic price delivery occurs strictly at highly specific temporal windows known as "Killzones"—windows of heightened algorithmic volatility, such as the London Open (2:00 AM - 5:00 AM NY local time) and the New York Open (7:00 AM - 10:00 AM NY local time). A technical setup that appears structurally flawless is deemed entirely invalid if it forms outside of these strict algorithmic time parameters.</p>
+                            
+                            <p>Furthermore, Huddleston introduced the industry to the true mathematical signatures of algorithmic intervention, most notably the Fair Value Gap (FVG). An FVG represents a severe algorithmic inefficiency—a moment of extreme, aggressive displacement where price was delivered so rapidly on one side of the market that the opposing side was completely excluded from participating. IPDA is mathematically programmed to eventually retrace back to these gaps to offer "fair value" to both buyers and sellers, making them the most highly precise, sniper-like targets for trade entries and profit taking.</p>
+                            
+                            <p>Similarly, the concept of the institutional Order Block (OB) completely revolutionized how elite traders view supply and demand. Unlike generic, arbitrary retail supply zones, a true ICT Order Block is the specific, last down-close candle prior to a massive algorithmic up-move that breaks market structure. It represents the exact, granular footprint where institutional entities accumulated their final short positions to manipulate the market downward, before injecting massive long volume. When price eventually returns to this block, institutions must mitigate (close out at break-even) their underwater manipulative shorts, causing massive, highly predictable market reactions.</p>
+                            
+                            <p>The successful integration of these complex concepts requires a masterful Top-Down Analysis approach. ICT practitioners never trade blindly on lower timeframes. They begin their bias formation strictly on the Monthly, Weekly, and Daily charts, utilizing macro liquidity draws to identify where the overarching Algorithm is currently pulling price. They then seamlessly transition to the 15-minute, 5-minute, and 1-minute charts within specific Killzones to identify precise Market Structure Shifts (MSS) and execute trades with absolute surgical precision, often risking mere fractions of a percent for massive, asymmetrical risk-to-reward ratios.</p>
+                            
+                            <p>Today, the undeniable legacy of M.J. Huddleston has fundamentally rewritten the rules of engagement in the financial markets. He engineered a massive, global paradigm shift, permanently rescuing traders from the retail matrix of lagging indicators, harmonic patterns, and retail trendlines. The SMC/ICT methodology is not merely a trading strategy; it is a profound, underlying understanding of pure market mechanics, allowing disciplined students to truly trade alongside the banks and algorithms that control the world's wealth.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orderflow Deep Dive -->
+                <div class="flex flex-col lg:flex-row gap-10 items-start" data-aos="fade-up">
+                    <div class="w-full lg:w-5/12 sticky top-24">
+                        <div class="rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(57,255,20,0.15)] border border-gray-800 relative group">
+                            <div class="absolute inset-0 bg-green-500/20 mix-blend-overlay group-hover:bg-transparent transition-all z-10 duration-500"></div>
+                            <img src="https://images.unsplash.com/photo-1642790106117-e829e14a795f?auto=format&fit=crop&q=80&w=1000" alt="Orderflow Charts" class="w-full h-[600px] object-cover transform group-hover:scale-105 transition-transform duration-700 filter grayscale group-hover:grayscale-0">
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-7/12">
+                        <div class="inline-block px-3 py-1 border border-green-500 text-green-500 text-xs font-bold uppercase tracking-widest rounded-full mb-4">Volume & Microstructure</div>
+                        <h3 class="text-4xl font-extrabold mb-6">Orderflow Data Analysis <br><span class="text-2xl text-gray-500">(The X-Ray of the Market)</span></h3>
+                        
+                        <div class="space-y-6 text-gray-300 text-justify leading-relaxed font-light">
+                            <p>While strict Price Action and ICT concepts provide the overarching macroscopic map of where price is highly likely to be drawn, advanced Orderflow Analysis provides the real-time, microscopic, undeniable truth of what is actually happening at that exact moment in the live market. Standard Japanese candlestick charts are fundamentally, mathematically limited; they only display the Open, High, Low, and Close (OHLC). They show you the aftermath and the result of a battle, but they completely blind you to the underlying mechanics of the battle itself. Orderflow is the X-ray vision of institutional trading, violently pulling back the curtain on hidden institutional volume.</p>
+                            
+                            <p>To truly comprehend Orderflow, one must fundamentally understand Market Microstructure and the mechanics of the continuous dual-auction process. Every single transaction executed in the financial market requires exactly two participating parties: a willing buyer and a willing seller. More specifically, it requires aggressive market orders violently interacting with passive limit orders resting quietly in the Central Limit Order Book (CLOB). When a retail trader aggressively hits "Buy Market," their order is instantly matched against the lowest currently available "Sell Limit" (known as the Ask). This constant interaction of aggressive market participants consuming passive limit liquidity is the only thing that actually causes price ticks to physically move up or down on a chart.</p>
+                            
+                            <p>The Depth of Market (DOM), frequently referred to as Level 2 Data, represents the resting limit orders—the exact, measurable liquidity available at every single price level both above and below the current active market price. Mega-institutions heavily utilize the DOM to accurately gauge market thickness and to engage in highly complex, predatory strategies like "Spoofing" or "Layering." In these scenarios, they place massive, artificial fake limit orders to visibly scare retail traders into moving the market in their desired direction, only to algorithmic pull the orders milliseconds before execution, trapping the retail flow.</p>
+                            
+                            <p>The true, undisputed heart of Orderflow analysis for elite day traders is the Footprint Chart (also professionally known as a Number Bar or Cluster Chart). A Footprint chart aggressively dissects a traditional candlestick, displaying exactly, down to the single contract, how much volume was traded on the Bid (aggressive market selling) versus the Ask (aggressive market buying) at every single individual price tick within that candle. By actively reading this high-definition data, traders can instantaneously see if massive buyers or overwhelming sellers are actually winning the battle at crucial algorithmic ICT levels.</p>
+                            
+                            <p>A critical, mathematically derived component of advanced Orderflow is the concept of Delta. Delta is meticulously calculated by taking the total volume of aggressive market buys and subtracting the total volume of aggressive market sells at any given price point or within a specific time period. A heavily positive Delta clearly indicates that aggressive buyers are in absolute control of the auction, while a starkly negative Delta shows that aggressive sellers are currently dominating the tape. Traders utilize tools like Cumulative Volume Delta (CVD) to meticulously track the macro aggression throughout the entire trading session.</p>
+                            
+                            <p>The most powerful application of CVD is hunting for Delta Divergence—an incredibly powerful, highly lucrative phenomenon where price artificially pushes up to make a new higher high, but the CVD simultaneously plummets, indicating the move is completely unsupported by real, aggressive buying volume. This is the ultimate institutional trap; it proves the move is fake, engineered solely to hunt liquidity, and is mathematically guaranteed to violently reverse in the opposite direction.</p>
+                            
+                            <p>Orderflow also visually exposes the hidden institutional concept of Absorption. You will frequently observe moments on a live Footprint chart where massive, aggressive buying volume enters the market (hundreds or even thousands of contracts hitting the Ask), yet the price completely fails to tick even one pip higher. This undeniably means a much larger, institutional whale is sitting there with a massive, iceberg passive Sell Limit order, effortlessly "absorbing" all the retail buying pressure. Once the retail buyers are fully exhausted and trapped, the institution drops the hammer, and price cascades violently downward.</p>
+                            
+                            <p>Conversely, the phenomenon of Exhaustion can be perfectly spotted at extreme structural highs or lows. As price reaches a major, obvious retail liquidity pool, you may suddenly see the transacted volume at the extreme ticks dry up entirely—printing single digits or absolute zeros on the Footprint chart. This clearly indicates a complete lack of institutional interest in continuing the auction in that direction, serving as an incredibly high-probability, real-time signal that the market is preparing for an imminent, aggressive reversal.</p>
+                            
+                            <p>Elite traders also heavily utilize Volume Profile and Auction Market Theory to precisely identify the Point of Control (POC)—the specific, undeniable price level where the absolute most volume was transacted during a given session or period—and the Value Area (VA), where 70% of the institutional trading occurred. Price naturally, magnetically gravitates toward these high-volume nodes because they represent accepted "fair value" to the market participants, while aggressively rejecting low-volume nodes which represent algorithmic inefficiencies and fast price delivery zones.</p>
+                            
+                            <p>The true, undeniable mastery taught at The Trap Room lies strictly in the Ultimate Confluence: seamlessly merging the predictive, macro time/price algorithms of M.J. Huddleston's ICT with the real-time, microscopic volume verification of Orderflow Data. When price approaches a designated ICT Killzone and precisely taps into a Daily Order Block, elite students do not blindly enter hoping for a reaction. We zoom directly into the Footprint chart. If we immediately see massive selling exhaustion exactly at the block, instantly followed by aggressive, stacked buying imbalances and rapidly surging positive Delta, we have absolute, mathematical, undeniable confirmation that the Tier-1 institutions are executing their algorithm. This is the exact blueprint required to achieve zero-drawdown, sniper-precision entries, completely escaping the retail matrix.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-[#0B0F19] py-12 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="w-16 h-16 mx-auto rounded-lg bg-gradient-to-br from-brand-gold to-yellow-800 flex items-center justify-center font-bold text-2xl text-white mb-6">
+                TR
+            </div>
+            <h2 class="text-2xl font-extrabold tracking-widest uppercase mb-6 text-white">The Trap Room</h2>
+            <div class="flex justify-center gap-8 mb-8">
+                <a href="#" class="text-3xl text-gray-500 hover:text-brand-blue transition-colors"><i class="fab fa-telegram"></i></a>
+                <a href="#" class="text-3xl text-gray-500 hover:text-red-500 transition-colors"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="text-3xl text-gray-500 hover:text-pink-500 transition-colors"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p class="text-xs font-bold uppercase tracking-widest text-gray-600 mb-2">Trading involves significant risk. Not financial advice.</p>
+            <p class="text-xs text-gray-700">&copy; 2026 The Trap Room Elite Trading Academy. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS Animations
+        AOS.init({ once: true, offset: 50, duration: 800 });
+
+        // --- Mobile Menu Logic ---
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        function closeMobileMenu() { mobileMenu.classList.add('hidden'); }
+
+        // --- Tab Switching Logic ---
+        let tvInjected = false;
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll(`.nav-link[data-target="${tabId}"]`).forEach(el => el.classList.add('active'));
+
+            if(tabId === 'chart' && !tvInjected) {
+                injectTradingView();
+                tvInjected = true;
+            }
+            if(tabId === 'tools') {
+                if(document.getElementById('timezone-select').options.length === 0) {
+                    populateTimezones();
                 }
+                renderSessions(); // Re-render to fix line positioning
+            }
 
-                updateSummary();
-                alert("Stats and Trades reset successfully! Scanners have been stopped.");
+            window.scrollTo(0, 0);
+        }
+
+        // --- TradingView Injector ---
+        function injectTradingView() {
+            const container = document.getElementById('tv-container');
+            const script = document.createElement('script');
+            script.src = "https://s3.tradingview.com/tv.js";
+            script.async = true;
+            script.onload = () => {
+                new TradingView.widget({
+                    "autosize": true,
+                    "symbol": "FX:EURUSD",
+                    "interval": "15",
+                    "timezone": "Etc/UTC",
+                    "theme": "dark",
+                    "style": "1",
+                    "locale": "en",
+                    "enable_publishing": false,
+                    "backgroundColor": "#0B0F19",
+                    "gridColor": "#1f2937",
+                    "hide_top_toolbar": false,
+                    "save_image": false,
+                    "container_id": "tv-container",
+                    "studies": [ "Volume@tv-basicstudies" ]
+                });
+            };
+            container.appendChild(script);
+        }
+
+        // --- Universal Lot Calculator Logic ---
+        function updateAssetConfig() {
+            const select = document.getElementById('calc-asset');
+            const customDiv = document.getElementById('custom-pip-div');
+            const pipInput = document.getElementById('calc-pipvalue');
+            
+            const selectedOption = select.options[select.selectedIndex];
+            const type = selectedOption.getAttribute('data-type');
+            
+            if(type === 'custom') {
+                customDiv.classList.remove('hidden');
+            } else {
+                customDiv.classList.add('hidden');
+                pipInput.value = select.value;
             }
         }
 
-        // ==========================================
-        // TELEGRAM API & HISTORY PANEL LOGIC
-        // ==========================================
-        function saveToTgHistory(msgId, text, isPhoto) {
-            tgHistory.unshift({ id: msgId, text: text, isPhoto: isPhoto, time: Date.now() });
-            localStorage.setItem('tg_history', JSON.stringify(tgHistory));
-            renderTgHistory();
-        }
+        function calculateLotSize() {
+            const balance = parseFloat(document.getElementById('calc-balance').value);
+            const riskPercent = parseFloat(document.getElementById('calc-risk').value);
+            const slPips = parseFloat(document.getElementById('calc-sl').value);
+            const pipValue = parseFloat(document.getElementById('calc-pipvalue').value);
+            const currencySym = document.getElementById('calc-currency').value === 'USD' ? '$' : 
+                                document.getElementById('calc-currency').value === 'EUR' ? '€' : '£';
 
-        function removeFromTgHistory(msgId) {
-            tgHistory = tgHistory.filter(m => m.id !== msgId);
-            localStorage.setItem('tg_history', JSON.stringify(tgHistory));
-            renderTgHistory();
-        }
-
-        function updateTgHistoryText(msgId, newText) {
-            let msg = tgHistory.find(m => m.id === msgId);
-            if(msg) {
-                msg.text = newText;
-                localStorage.setItem('tg_history', JSON.stringify(tgHistory));
-                renderTgHistory();
-            }
-        }
-
-        function renderTgHistory() {
-            const container = document.getElementById('tg-history-container');
-            container.innerHTML = '';
-            if (tgHistory.length === 0) {
-                container.innerHTML = '<p class="text-sm text-gray-500 text-center mt-4">No messages sent yet.</p>';
+            if (!balance || !riskPercent || !slPips || !pipValue) {
+                // Instead of alert, softly highlight inputs
+                document.getElementById('result-lot').innerText = "ERR";
                 return;
             }
 
-            tgHistory.forEach(msg => {
-                const dateObj = new Date(msg.time);
-                const timeStr = `${dateObj.getHours().toString().padStart(2, '0')}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
-                const badge = msg.isPhoto ? '<span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[10px] font-bold">Signal</span>' : '<span class="bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded text-[10px] font-bold">Text</span>';
-                
-                const encodedText = encodeURIComponent(msg.text);
+            const riskAmount = balance * (riskPercent / 100);
+            const lotSize = riskAmount / (slPips * pipValue);
+            const units = Math.round(lotSize * 100000); // Approximation for standard lot units
 
-                const html = `
-                    <div class="bg-white p-3 rounded shadow border border-gray-200 text-sm">
-                        <div class="flex justify-between items-center mb-2">
-                            <div>${badge} <span class="text-gray-400 text-xs ml-1">${timeStr}</span></div>
-                            <div class="flex gap-2">
-                                <button onclick="promptEditTgMsg(${msg.id}, ${msg.isPhoto}, '${encodedText}')" class="text-blue-500 hover:text-blue-700 font-bold text-xs">Edit</button>
-                                <button onclick="deleteSingleTgMsg(${msg.id})" class="text-red-500 hover:text-red-700 font-bold text-xs">Delete</button>
-                            </div>
-                        </div>
-                        <div class="text-gray-700 text-xs whitespace-pre-wrap truncate max-h-16 overflow-hidden hover:max-h-full hover:whitespace-normal transition-all" title="Click edit to view full text">${msg.text}</div>
-                    </div>
-                `;
-                container.insertAdjacentHTML('beforeend', html);
+            document.getElementById('result-money').innerText = currencySym + riskAmount.toFixed(2);
+            document.getElementById('result-lot').innerText = lotSize.toFixed(2);
+            document.getElementById('result-units').innerText = units.toLocaleString();
+        }
+
+        // Initialize Calculator
+        updateAssetConfig();
+
+        // --- Advanced Market Sessions (BabyPips Style Timeline) ---
+        // Session UTC Hours (Approximate)
+        const sessionsData = [
+            { id: 'sydney', name: 'Sydney', color: '#8b5cf6', startUTC: 22, endUTC: 7 },
+            { id: 'tokyo', name: 'Tokyo', color: '#0ea5e9', startUTC: 23, endUTC: 8 },
+            { id: 'london', name: 'London', color: '#eab308', startUTC: 7, endUTC: 16 },
+            { id: 'ny', name: 'New York', color: '#ef4444', startUTC: 12, endUTC: 21 }
+        ];
+
+        function populateTimezones() {
+            const select = document.getElementById('timezone-select');
+            const timezones = moment.tz.names();
+            // Important popular ones first
+            const popular = ['Asia/Colombo', 'Europe/London', 'America/New_York', 'Asia/Tokyo', 'Australia/Sydney', 'UTC'];
+            
+            popular.forEach(tz => {
+                select.add(new Option(tz, tz));
             });
-        }
+            select.add(new Option("──────────", "", false, false));
+            select.options[select.options.length-1].disabled = true;
 
-        // ==========================================
-        // TELEGRAM NETWORK CALLS
-        // ==========================================
-        async function sendCustomMsg() {
-            const input = document.getElementById('chat-input');
-            const msg = input.value.trim();
-            if(msg) {
-                try {
-                    let res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            chat_id: TELEGRAM_CHAT_ID,
-                            text: `💬 *Admin:*\n${msg}`,
-                            parse_mode: 'Markdown'
-                        })
-                    });
-                    let data = await res.json();
-                    if(data.ok) {
-                        saveToTgHistory(data.result.message_id, msg, false);
-                        input.value = "";
-                    }
-                } catch(e) { console.error(e); }
-            }
-        }
-
-        async function sendTelegramPhoto(canvas, caption) {
-            return new Promise((resolve) => {
-                canvas.toBlob(async (blob) => {
-                    let formData = new FormData();
-                    formData.append('photo', blob, 'chart.png');
-                    formData.append('chat_id', TELEGRAM_CHAT_ID);
-                    formData.append('caption', caption);
-                    formData.append('parse_mode', 'Markdown');
-                    try {
-                        let res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
-                            method: 'POST',
-                            body: formData
-                        });
-                        let data = await res.json();
-                        if(data.ok) {
-                            saveToTgHistory(data.result.message_id, caption, true);
-                            resolve(data.result.message_id);
-                        } else {
-                            resolve(null);
-                        }
-                    } catch(e) { resolve(null); }
-                });
-            });
-        }
-
-        async function promptEditTgMsg(msgId, isPhoto, encodedOldText) {
-            let oldText = decodeURIComponent(encodedOldText);
-            let newText = prompt("Edit your message:", oldText);
-            if (newText !== null && newText.trim() !== "") {
-                try {
-                    let url = isPhoto ? `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageCaption` : `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageText`;
-                    let bodyData = { chat_id: TELEGRAM_CHAT_ID, message_id: msgId, parse_mode: 'Markdown' };
-                    
-                    if (isPhoto) bodyData.caption = newText;
-                    else bodyData.text = newText;
-
-                    let res = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(bodyData)
-                    });
-                    let data = await res.json();
-                    if(data.ok) {
-                        updateTgHistoryText(msgId, newText);
-                    } else {
-                        alert("Failed to edit. Telegram might block identical edits or old messages.");
-                    }
-                } catch(e) { console.error(e); }
-            }
-        }
-
-        async function deleteSingleTgMsg(msgId) {
-            if(confirm("Are you sure you want to delete this message from Telegram?")) {
-                try {
-                    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/deleteMessage`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: msgId })
-                    });
-                    removeFromTgHistory(msgId);
-                } catch(e) { console.error(e); }
-            }
-        }
-
-        async function deleteAllTgMessages() {
-            if(confirm("WARNING: This will delete ALL sent messages and signals from the Telegram channel. Proceed?")) {
-                const historyCopy = [...tgHistory];
-                for(let msg of historyCopy) {
-                    try {
-                        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/deleteMessage`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: msg.id })
-                        });
-                    } catch(e) {}
-                }
-                tgHistory = [];
-                localStorage.setItem('tg_history', JSON.stringify([]));
-                renderTgHistory();
-                alert("All tracking messages have been deleted from Telegram.");
-            }
-        }
-
-        async function replyTelegramMsg(msgId, text) {
-            if(!msgId) return;
-            try {
-                let res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: TELEGRAM_CHAT_ID,
-                        text: text,
-                        reply_to_message_id: msgId,
-                        parse_mode: 'Markdown'
-                    })
-                });
-                let data = await res.json();
-                if(data.ok) saveToTgHistory(data.result.message_id, text, false);
-            } catch(e) {}
-        }
-
-        async function sendDailyReportTG() {
-            let { reportText } = getDailyReport();
-            
-            if (lastReportMsgId) {
-                try {
-                    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/deleteMessage`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: lastReportMsgId })
-                    });
-                    removeFromTgHistory(lastReportMsgId);
-                } catch(e) {}
-            }
-            
-            try {
-                let fullText = `📊 *DAILY REPORT* 📊\n\n${reportText}`;
-                let res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: TELEGRAM_CHAT_ID,
-                        text: fullText,
-                        parse_mode: 'Markdown'
-                    })
-                });
-                let data = await res.json();
-                if(data.ok) {
-                    lastReportMsgId = data.result.message_id;
-                    saveToTgHistory(lastReportMsgId, fullText, false);
-                }
-            } catch(e) {}
-        }
-
-        function buildTgCaption(symbol, strategy, sigType, entry, tp, sl, pnlPct = 0.0) {
-            let sign = pnlPct > 0 ? "+" : "";
-            let emoji = strategy === "S1" ? "🛡️" : "🔥";
-            let strategyName = strategy === "S1" ? "Strategy 1 (SMC 15m)" : "Strategy 2 (ICT+SMC 15m/5m)";
-
-            return `🚨 *HIGH ACCURACY SETUP: ${symbol}* 🚨\n\n` +
-                   `${emoji} *[${strategyName}]*\n` +
-                   `📈 *Action:* ${sigType}\n` +
-                   `🎯 *Entry:* ${entry.toFixed(4)}\n` +
-                   `✅ *Target (TP):* ${tp.toFixed(4)}\n` +
-                   `🛑 *Stop Loss:* ${sl.toFixed(4)}\n\n` +
-                   `🛡️ *PURE PRICE ACTION SETUP:*\n` +
-                   `• Strong Displacement & FVG Validated.\n` +
-                   `• Move SL to Break Even (BE) at 1:1.\n\n` +
-                   `📊 *Live PnL:* \`${sign}${pnlPct.toFixed(3)}%\``;
-        }
-
-        // ==========================================
-        // MARKET DATA FETCHING
-        // ==========================================
-        async function getMarketData(symbol, interval) {
-            try {
-                let res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=100`);
-                let data = await res.json();
-                return data.map(d => ({
-                    timestamp: d[0],
-                    open: parseFloat(d[1]),
-                    high: parseFloat(d[2]),
-                    low: parseFloat(d[3]),
-                    close: parseFloat(d[4])
-                }));
-            } catch(e) { return null; }
-        }
-
-        // ==========================================
-        // STRATEGY 1 LOGIC (SMC 15m)
-        // ==========================================
-        function analyzeSmcStrict(df) {
-            if (!df || df.length < 50) return null;
-            let last = df[df.length - 1];
-            let entryPrice = last.close;
-
-            let avgBody = 0;
-            for(let k = df.length - 20; k < df.length; k++) {
-                avgBody += Math.abs(df[k].close - df[k].open);
-            }
-            avgBody /= 20;
-
-            for (let i = df.length - 20; i < df.length - 2; i++) {
-                if (df[i].high < df[i+2].low) {
-                    let fvgBottom = df[i].high; let fvgTop = df[i+2].low;
-                    let originLow = Math.min(df[i].low, df[i+1].low, df[i+2].low);
-                    
-                    let displacementBody = Math.abs(df[i+1].close - df[i+1].open);
-                    if (displacementBody < avgBody * 1.2) continue;
-
-                    let mitigated = false;
-                    for (let j = i + 3; j < df.length - 1; j++) {
-                        if (df[j].low < fvgBottom) { mitigated = true; break; }
-                    }
-                    if (!mitigated) {
-                        if (last.low <= fvgTop && last.low >= fvgBottom * 0.99) {
-                            let candleRange = last.high - last.low;
-                            if (candleRange > 0 && last.close > last.open) {
-                                let closePct = (last.close - last.low) / candleRange;
-                                if (closePct > 0.55) { 
-                                    let sl = originLow * 0.999; let risk = entryPrice - sl;
-                                    if (risk > 0 && (fvgTop - fvgBottom) > (entryPrice * 0.0003)) {
-                                        let tp = entryPrice + (risk * 2.5);
-                                        return ['BUY', entryPrice, tp, sl, risk, fvgTop, fvgBottom];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                else if (df[i].low > df[i+2].high) {
-                    let fvgTop = df[i].low; let fvgBottom = df[i+2].high;
-                    let originHigh = Math.max(df[i].high, df[i+1].high, df[i+2].high);
-                    
-                    let displacementBody = Math.abs(df[i+1].close - df[i+1].open);
-                    if (displacementBody < avgBody * 1.2) continue;
-
-                    let mitigated = false;
-                    for (let j = i + 3; j < df.length - 1; j++) {
-                        if (df[j].high > fvgTop) { mitigated = true; break; }
-                    }
-                    if (!mitigated) {
-                        if (last.high >= fvgBottom && last.high <= fvgTop * 1.01) {
-                            let candleRange = last.high - last.low;
-                            if (candleRange > 0 && last.close < last.open) {
-                                let closePct = (last.high - last.close) / candleRange;
-                                if (closePct > 0.55) { 
-                                    let sl = originHigh * 1.001; let risk = sl - entryPrice;
-                                    if (risk > 0 && (fvgTop - fvgBottom) > (entryPrice * 0.0003)) {
-                                        let tp = entryPrice - (risk * 2.5);
-                                        return ['SELL', entryPrice, tp, sl, risk, fvgTop, fvgBottom];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-
-        // ==========================================
-        // STRATEGY 2 LOGIC (ICT + SMC 15m/5m)
-        // ==========================================
-        function analyzeICT(df15m, df5m) {
-            if (!df15m || !df5m || df15m.length < 50 || df5m.length < 50) return null;
-
-            let bias = 0; 
-            let last15 = df15m[df15m.length - 1];
-            
-            let ema15 = df15m.slice(-20).reduce((acc, val) => acc + val.close, 0) / 20;
-            
-            let lowestLow20 = Math.min(...df15m.slice(-30, -10).map(d=>d.low));
-            let highestHigh20 = Math.max(...df15m.slice(-30, -10).map(d=>d.high));
-            let recentLow = Math.min(...df15m.slice(-10).map(d=>d.low));
-            let recentHigh = Math.max(...df15m.slice(-10).map(d=>d.high));
-
-            if (recentLow < lowestLow20 && last15.close > ema15) {
-                bias = 1; 
-            } else if (recentHigh > highestHigh20 && last15.close < ema15) {
-                bias = -1; 
-            }
-
-            if (bias === 0) return null;
-
-            let last5 = df5m[df5m.length - 1];
-            let entryPrice = last5.close;
-
-            let avgBody5 = 0;
-            for(let k = df5m.length - 20; k < df5m.length; k++) {
-                avgBody5 += Math.abs(df5m[k].close - df5m[k].open);
-            }
-            avgBody5 /= 20;
-
-            for (let i = df5m.length - 80; i < df5m.length - 2; i++) {
-                if (bias === 1) { 
-                    if (df5m[i].high < df5m[i+2].low) {
-                        let fvgBottom = df5m[i].high; let fvgTop = df5m[i+2].low;
-                        let originLow = Math.min(df5m[i].low, df5m[i+1].low, df5m[i+2].low);
-                        
-                        let displacementBody = Math.abs(df5m[i+1].close - df5m[i+1].open);
-                        if (displacementBody > avgBody5 * 1.5) {
-                            let mitigated = false;
-                            for (let j = i + 3; j < df5m.length - 1; j++) {
-                                if (df5m[j].low < fvgBottom) { mitigated = true; break; }
-                            }
-                            if (!mitigated) {
-                                if (last5.low <= fvgTop && last5.low >= fvgBottom * 0.99) {
-                                    let candleRange = last5.high - last5.low;
-                                    if (candleRange > 0 && last5.close > last5.open) {
-                                        let closePct = (last5.close - last5.low) / candleRange;
-                                        if (closePct > 0.60) { 
-                                            let sl = originLow * 0.999;
-                                            let risk = entryPrice - sl;
-                                            if (risk > 0) {
-                                                let tp = entryPrice + (risk * 2.5); 
-                                                return ['BUY', entryPrice, tp, sl, risk, fvgTop, fvgBottom];
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else if (bias === -1) { 
-                    if (df5m[i].low > df5m[i+2].high) {
-                        let fvgTop = df5m[i].low; let fvgBottom = df5m[i+2].high;
-                        let originHigh = Math.max(df5m[i].high, df5m[i+1].high, df5m[i+2].high);
-                        
-                        let displacementBody = Math.abs(df5m[i+1].close - df5m[i+1].open);
-                        if (displacementBody > avgBody5 * 1.5) {
-                            let mitigated = false;
-                            for (let j = i + 3; j < df5m.length - 1; j++) {
-                                if (df5m[j].high > fvgTop) { mitigated = true; break; }
-                            }
-                            if (!mitigated) {
-                                if (last5.high >= fvgBottom && last5.high <= fvgTop * 1.01) {
-                                    let candleRange = last5.high - last5.low;
-                                    if (candleRange > 0 && last5.close < last5.open) {
-                                        let closePct = (last5.high - last5.close) / candleRange;
-                                        if (closePct > 0.60) { 
-                                            let sl = originHigh * 1.001;
-                                            let risk = sl - entryPrice;
-                                            if (risk > 0) {
-                                                let tp = entryPrice - (risk * 2.5);
-                                                return ['SELL', entryPrice, tp, sl, risk, fvgTop, fvgBottom];
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-
-        // ==========================================
-        // UI CHARTS & CARDS
-        // ==========================================
-        let marketCanvas, ctx;
-        function initCanvas() {
-            marketCanvas = document.getElementById('marketChart');
-            ctx = marketCanvas.getContext('2d');
-            marketCanvas.width = marketCanvas.parentElement.clientWidth - 32;
-            marketCanvas.height = marketCanvas.parentElement.clientHeight - 32;
-            drawPlaceholder();
-        }
-
-        window.addEventListener('resize', () => {
-            if(!marketCanvas) return;
-            marketCanvas.width = marketCanvas.parentElement.clientWidth - 32;
-            marketCanvas.height = marketCanvas.parentElement.clientHeight - 32;
-        });
-
-        function drawPlaceholder() {
-            ctx.clearRect(0,0, marketCanvas.width, marketCanvas.height);
-            ctx.fillStyle = '#6B7280';
-            ctx.font = '16px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText("Waiting for market data...", marketCanvas.width/2, marketCanvas.height/2);
-            ctx.textAlign = 'left';
-        }
-
-        function drawCandlestickChart(df, symbol, strategy, fvgTop, fvgBottom) {
-            const width = marketCanvas.width;
-            const height = marketCanvas.height;
-            ctx.clearRect(0, 0, width, height);
-
-            ctx.strokeStyle = 'rgba(0,0,0,0.05)';
-            ctx.lineWidth = 1;
-            for(let i=0; i<width; i+=50) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,height); ctx.stroke(); }
-            for(let i=0; i<height; i+=50) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(width,i); ctx.stroke(); }
-
-            let data = df.slice(-40);
-            if(data.length === 0) return;
-
-            let minLow = Math.min(...data.map(d => d.low)) * 0.999;
-            let maxHigh = Math.max(...data.map(d => d.high)) * 1.001;
-            let priceRange = maxHigh - minLow;
-
-            const padding = 20;
-            const drawHeight = height - (padding * 2);
-            const xStep = width / data.length;
-
-            const getY = (price) => height - padding - ((price - minLow) / priceRange) * drawHeight;
-
-            if (fvgTop && fvgBottom) {
-                ctx.fillStyle = strategy === 'S2' ? 'rgba(168, 85, 247, 0.2)' : 'rgba(245, 158, 11, 0.2)'; 
-                let yTop = getY(fvgTop);
-                let yBottom = getY(fvgBottom);
-                ctx.fillRect(0, yTop, width, Math.abs(yBottom - yTop));
-            }
-
-            data.forEach((d, i) => {
-                let x = i * xStep + (xStep / 2);
-                let yOpen = getY(d.open);
-                let yClose = getY(d.close);
-                let yHigh = getY(d.high);
-                let yLow = getY(d.low);
-
-                let isUp = d.close >= d.open;
-                let color = isUp ? '#10B981' : '#EF4444';
-                
-                ctx.strokeStyle = '#6B7280';
-                ctx.lineWidth = 1;
-                ctx.beginPath(); ctx.moveTo(x, yHigh); ctx.lineTo(x, yLow); ctx.stroke();
-
-                ctx.fillStyle = color;
-                let bodyHeight = Math.max(Math.abs(yClose - yOpen), 2);
-                let bodyY = Math.min(yOpen, yClose);
-                ctx.fillRect(x - (xStep * 0.3), bodyY, xStep * 0.6, bodyHeight);
+            timezones.forEach(tz => {
+                if(!popular.includes(tz)) select.add(new Option(tz, tz));
             });
 
-            ctx.fillStyle = '#1F2937';
-            ctx.font = 'bold 16px sans-serif';
-            ctx.fillText(`[${strategy}] Setup: ${symbol}`, 15, 30);
+            // Set default to Colombo (as per context)
+            select.value = 'Asia/Colombo';
         }
 
-        function createSignalCard(symbol, strategy, sigType, entry, tp, sl) {
-            const container = document.getElementById('cards-container');
-            const cardId = `card-${strategy}-${symbol.replace('/','')}`;
-            if(document.getElementById(cardId)) return; 
-
-            const isBuy = sigType.includes('BUY');
-            const accent = isBuy ? 'bg-green-500' : 'bg-red-500';
-            const stratBadge = strategy === 'S1' ? 'bg-gray-800' : 'bg-purple-600';
-
-            const html = `
-                <div id="${cardId}" class="bg-white rounded border-2 border-transparent shadow p-3 transition">
-                    <div class="flex justify-between items-center border-b pb-2 mb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="${stratBadge} text-white font-bold py-0.5 px-1.5 rounded text-[10px]">${strategy}</span>
-                            <span class="text-md font-bold text-gray-800">${symbol}</span>
-                        </div>
-                        <span class="${accent} text-white font-bold py-1 px-2 rounded text-[10px]">${sigType}</span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-1 text-xs mb-2">
-                        <div class="text-gray-600">Entry: <br><span class="font-mono text-black font-semibold">${entry.toFixed(4)}</span></div>
-                        <div class="text-green-600">TP: <br><span class="font-mono font-semibold">${tp.toFixed(4)}</span></div>
-                        <div class="text-red-500" id="sl-${strategy}-${symbol}">SL: <br><span class="font-mono font-semibold">${sl.toFixed(4)}</span></div>
-                    </div>
-                    <div id="pnl-${strategy}-${symbol}" class="text-sm font-bold text-gray-500">
-                        Live PnL: 0.00%
-                    </div>
-                </div>
-            `;
-            container.insertAdjacentHTML('afterbegin', html);
-        }
-
-        function updateCardPnl(symbol, strategy, pnlPct) {
-            let el = document.getElementById(`pnl-${strategy}-${symbol}`);
-            if(el) {
-                let sign = pnlPct > 0 ? "+" : "";
-                let colorClass = pnlPct > 0 ? "text-green-500" : "text-red-500";
-                el.className = `text-sm font-bold ${colorClass}`;
-                el.innerText = `Live PnL: ${sign}${pnlPct.toFixed(3)}%`;
+        function createSessionBar(session, tz) {
+            // Calculate start and end in local time
+            // Create a moment object for today at the UTC start hour
+            let startMom = moment.utc().set({hour: session.startUTC, minute: 0, second: 0});
+            let endMom = moment.utc().set({hour: session.endUTC, minute: 0, second: 0});
+            
+            // If end is before start in UTC, it means it crosses midnight UTC.
+            if(session.endUTC <= session.startUTC) {
+                endMom.add(1, 'day');
             }
-        }
 
-        function markCardClosed(symbol, strategy, status, pnlPct) {
-            let el = document.getElementById(`pnl-${strategy}-${symbol}`);
-            let card = document.getElementById(`card-${strategy}-${symbol.replace('/','')}`);
-            if(el && card) {
-                let colorClass = status === 'WIN' ? 'text-green-500' : (status === 'LOSS' ? 'text-red-500' : 'text-yellow-500');
-                let borderClass = status === 'WIN' ? 'border-green-500' : (status === 'LOSS' ? 'border-red-500' : 'border-yellow-500');
-                
-                let sign = pnlPct > 0 ? "+" : "";
-                el.className = `text-xs font-bold ${colorClass}`;
-                el.innerText = `CLOSED | PnL: ${sign}${pnlPct.toFixed(3)}% | ${status}`;
-                
-                card.classList.remove('border-transparent');
-                card.classList.add(borderClass);
-            }
-        }
+            // Convert to selected timezone
+            let localStart = startMom.tz(tz);
+            let localEnd = endMom.tz(tz);
 
-        // ==========================================
-        // MAIN UNIFIED SCANNER LOOP
-        // ==========================================
-        async function fetchTicker(symbol) {
-            try {
-                let res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
-                let data = await res.json();
-                return parseFloat(data.price);
-            } catch(e) { return null; }
-        }
-
-        async function processStrategy(strategyId, symbol, currentPrice, df15m, df5m) {
-            let activeTrades = strategyId === 'S1' ? activeTradesS1 : activeTradesS2;
-
-            if(!activeTrades[symbol]) {
-                let signalData = null;
-                if(strategyId === 'S1' && df15m) signalData = analyzeSmcStrict(df15m);
-                else if(strategyId === 'S2' && df15m && df5m) signalData = analyzeICT(df15m, df5m);
-
-                if(signalData) {
-                    let [sigType, entry, tp, sl, risk, fvgTop, fvgBottom] = signalData;
-                    
-                    let dbId = saveSignal(symbol, sigType, entry, tp, sl, strategyId);
-                    
-                    createSignalCard(symbol, strategyId, sigType, entry, tp, sl);
-                    
-                    let dfForChart = strategyId === 'S1' ? df15m : df5m;
-                    drawCandlestickChart(dfForChart, symbol, strategyId, fvgTop, fvgBottom);
-
-                    let caption = buildTgCaption(symbol, strategyId, sigType, entry, tp, sl, 0.0);
-                    let tgMsgId = await sendTelegramPhoto(marketCanvas, caption);
-
-                    activeTrades[symbol] = {
-                        id: dbId, type: sigType, entry, tp, sl, 
-                        initialRisk: risk, beSet: false, 
-                        tgMsgId: tgMsgId, lastTgUpdate: Date.now(),
-                        fvgTop, fvgBottom
-                    };
-                }
+            let startH = localStart.hour() + (localStart.minute()/60);
+            let endH = localEnd.hour() + (localEnd.minute()/60);
+            
+            let html = '';
+            
+            // Render logic (Grid has 24 columns, 0 to 24)
+            if (endH > startH) {
+                // Normal block within same day
+                let colStart = Math.floor(startH) + 1; // Grid is 1-indexed
+                let span = Math.ceil(endH - startH);
+                html = `<div class="session-bar" style="background-color: ${session.color}; grid-column: ${colStart} / span ${span};">${session.name}</div>`;
             } else {
-                let trade = activeTrades[symbol];
-                let pnlPct = 0, isWin = false, isLoss = false;
-
-                if (trade.type.includes('BUY')) {
-                    if (currentPrice >= (trade.entry + trade.initialRisk) && !trade.beSet) {
-                        trade.sl = trade.entry; trade.beSet = true; 
-                        document.getElementById(`sl-${strategyId}-${symbol}`).innerHTML = `SL: <br><span class="font-mono text-yellow-500 font-bold">BE (${trade.entry.toFixed(4)})</span>`;
-                    }
-                    pnlPct = ((currentPrice - trade.entry) / trade.entry) * 100;
-                    isWin = currentPrice >= trade.tp;
-                    isLoss = currentPrice <= trade.sl;
-                } else {
-                    if (currentPrice <= (trade.entry - trade.initialRisk) && !trade.beSet) {
-                        trade.sl = trade.entry; trade.beSet = true;
-                        document.getElementById(`sl-${strategyId}-${symbol}`).innerHTML = `SL: <br><span class="font-mono text-yellow-500 font-bold">BE (${trade.entry.toFixed(4)})</span>`;
-                    }
-                    pnlPct = ((trade.entry - currentPrice) / trade.entry) * 100;
-                    isWin = currentPrice <= trade.tp;
-                    isLoss = currentPrice >= trade.sl;
-                }
-
-                updateCardPnl(symbol, strategyId, pnlPct);
-
-                if (Date.now() - trade.lastTgUpdate > 15000) {
-                    if (trade.tgMsgId) {
-                        let newCap = buildTgCaption(symbol, strategyId, trade.type, trade.entry, trade.tp, trade.sl, pnlPct);
-                        fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageCaption`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: trade.tgMsgId, caption: newCap, parse_mode: 'Markdown' })
-                        });
-                        updateTgHistoryText(trade.tgMsgId, newCap);
-                        trade.lastTgUpdate = Date.now();
-                    }
-                }
-
-                if(isWin || isLoss) {
-                    let status = 'BREAK EVEN';
-                    if (isLoss && !trade.beSet) status = 'LOSS';
-                    else if (isWin) status = 'WIN';
-
-                    updateSignalStatus(trade.id, status);
-                    markCardClosed(symbol, strategyId, status, pnlPct);
-
-                    if (status === 'LOSS') {
-                        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/deleteMessage`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, message_id: trade.tgMsgId })
-                        });
-                        removeFromTgHistory(trade.tgMsgId);
-                    } else {
-                        if (status === 'WIN') {
-                            await replyTelegramMsg(trade.tgMsgId, `🚀💸🎉 BOOM! [${strategyId}] ${symbol} Target Hit! 🥂🔥`);
-                        } else if (status === 'BREAK EVEN') {
-                            await replyTelegramMsg(trade.tgMsgId, `🛡️ [${strategyId}] ${symbol} closed at Break Even (BE). 🤝`);
-                        }
-                    }
-
-                    delete activeTrades[symbol];
-                    await sendDailyReportTG();
+                // Crosses midnight in local timezone, draw two blocks
+                let colStart1 = Math.floor(startH) + 1;
+                let span1 = 25 - colStart1;
+                html += `<div class="session-bar rounded-r-none" style="background-color: ${session.color}; grid-column: ${colStart1} / span ${span1};">${session.name}</div>`;
+                
+                let span2 = Math.ceil(endH);
+                if(span2 > 0) {
+                    html += `<div class="session-bar rounded-l-none" style="background-color: ${session.color}; grid-column: 1 / span ${span2};"></div>`;
                 }
             }
+            return html;
         }
 
-        async function tradingLoop() {
-            if(!isRunningS1 && !isRunningS2) return;
+        function renderSessions() {
+            const tz = document.getElementById('timezone-select').value;
+            if(!tz) return;
 
-            for(let symbol of symbolsToTrade) {
-                if(!isRunningS1 && !isRunningS2) break;
-
-                let currentPrice = await fetchTicker(symbol);
-                if(!currentPrice) continue;
-
-                let df15m = null;
-                let df5m = null;
-
-                if(isRunningS1 || isRunningS2) {
-                    df15m = await getMarketData(symbol, '15m');
-                }
-                if(isRunningS2) {
-                    df5m = await getMarketData(symbol, '5m');
-                }
-
-                if(isRunningS1) await processStrategy('S1', symbol, currentPrice, df15m, null);
-                if(isRunningS2) await processStrategy('S2', symbol, currentPrice, df15m, df5m);
+            // Render Header (00 to 23)
+            const header = document.getElementById('timeline-hours-header');
+            header.innerHTML = '';
+            for(let i=0; i<24; i++) {
+                header.innerHTML += `<div class="timeline-hour">${i.toString().padStart(2, '0')}</div>`;
             }
 
-            updateSummary();
-            
-            if(isRunningS1 || isRunningS2) {
-                scannerInterval = setTimeout(tradingLoop, 4000); 
-            }
+            // Render Rows
+            sessionsData.forEach(s => {
+                document.getElementById(`row-${s.id}`).innerHTML = createSessionBar(s, tz);
+            });
+
+            updateCurrentTimeLine(tz);
         }
 
-        // ==========================================
-        // SCANNER CONTROLS (State Update)
-        // ==========================================
-        function startStrategy(strat) {
-            if(strat === 'S1') {
-                isRunningS1 = true;
-                document.getElementById('btn-start-s1').disabled = true;
-                document.getElementById('btn-start-s1').classList.add('opacity-50', 'cursor-not-allowed');
-                document.getElementById('btn-stop-s1').disabled = false;
-                document.getElementById('btn-stop-s1').classList.remove('opacity-50', 'cursor-not-allowed');
-            } else if(strat === 'S2') {
-                isRunningS2 = true;
-                document.getElementById('btn-start-s2').disabled = true;
-                document.getElementById('btn-start-s2').classList.add('opacity-50', 'cursor-not-allowed');
-                document.getElementById('btn-stop-s2').disabled = false;
-                document.getElementById('btn-stop-s2').classList.remove('opacity-50', 'cursor-not-allowed');
-            }
+        function updateCurrentTimeLine(tz) {
+            const now = moment().tz(tz);
+            const hour = now.hour();
+            const minute = now.minute();
             
-            saveBotState(); 
-            updateSummary();
+            // Calculate percentage across the 24 hour grid
+            // Grid represents 0 to 24 hours.
+            const totalMinutes = 24 * 60;
+            const currentMinutes = (hour * 60) + minute;
+            const percentage = (currentMinutes / totalMinutes) * 100;
+
+            const line = document.getElementById('current-time-line');
+            const label = document.getElementById('current-time-label');
             
-            if(scannerInterval === null) {
-                tradingLoop();
-            }
+            line.style.left = `${percentage}%`;
+            label.innerText = now.format('HH:mm');
         }
 
-        function stopStrategy(strat) {
-            if(strat === 'S1') {
-                isRunningS1 = false;
-                document.getElementById('btn-start-s1').disabled = false;
-                document.getElementById('btn-start-s1').classList.remove('opacity-50', 'cursor-not-allowed');
-                document.getElementById('btn-stop-s1').disabled = true;
-                document.getElementById('btn-stop-s1').classList.add('opacity-50', 'cursor-not-allowed');
-            } else if(strat === 'S2') {
-                isRunningS2 = false;
-                document.getElementById('btn-start-s2').disabled = false;
-                document.getElementById('btn-start-s2').classList.remove('opacity-50', 'cursor-not-allowed');
-                document.getElementById('btn-stop-s2').disabled = true;
-                document.getElementById('btn-stop-s2').classList.add('opacity-50', 'cursor-not-allowed');
+        // Setup Interval for time updates
+        setInterval(() => {
+            if(document.getElementById('tools').classList.contains('active')) {
+                const tz = document.getElementById('timezone-select').value;
+                if(tz) updateCurrentTimeLine(tz);
             }
-            
-            saveBotState(); 
-            updateSummary();
-            
-            if(!isRunningS1 && !isRunningS2) {
-                clearTimeout(scannerInterval);
-                scannerInterval = null;
-            }
-        }
+        }, 60000); // Update every minute
+
     </script>
 </body>
 </html>
